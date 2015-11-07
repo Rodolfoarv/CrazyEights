@@ -1,4 +1,4 @@
-# Evil-Hangman game
+# Crazy-Eights Game
 
 This application was developed by Rodolfo Andrés Ramírez Valenzuela
 as part of the Web Development class.
