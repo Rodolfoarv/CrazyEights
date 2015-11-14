@@ -10,6 +10,7 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var app = express();
 
+var mongoose = require('mongoose');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -60,3 +61,12 @@ app.use(function(err, req, res, next) {
 
 
 module.exports = app;
+
+// Conexión a base de datos MongoDB.
+mongoose.connect('mongodb://localhost/crazyEights');
+mongoose.connection.on('open', () => {
+  console.log('Connected to mongoDB');
+});
+mongoose.connection.on('error', err => {
+  console.log('Moongose error. ' + err);
+});

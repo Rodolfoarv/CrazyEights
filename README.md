@@ -20,6 +20,7 @@ The application lets you play the hangman game, it uses the following technologi
     sudo npm start
 
 Once the app is running you can access it from: <http://localhost:3000/>
+Or access the text-client using the following command npm run-script client
 
 
 ## Authors

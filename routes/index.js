@@ -30,17 +30,18 @@ router.get('/', function(req, res, next) {
 
 router.post('/crazyEights/createGame/', (req,res) => {
   let result = {created: false, code: 'invalid'};
-  let gameName = req.body.gameName;
+  let name = req.body.name;
   let game;
   let player;
 
-  if (gameName){
+  if (name){
     let find = promisify(Game.find.bind(Game));
-    find({gameName: gameName, started:false})
+    find({name: name, started:false})
     .then(arg => {
       let games = arg[0];
+      console.log('these are the games', games);
       if (games.length === 0){
-        game = new Game({name: gameName});
+        game = new Game({name: name});
         console.log('Created game');
         let save = promisify(game.save.bind(game));
         return save();
