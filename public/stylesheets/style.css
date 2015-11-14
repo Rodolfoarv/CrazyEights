@@ -1,3 +1,11 @@
+/*----------------------------------------------------------
+ * Exam 2: Evil Hangman
+ * Date: 26-Oct-2015
+ * Authors:
+ *           A01169701 Rodolfo Andrés Ramírez Valenzuela
+ *
+ *----------------------------------------------------------*/
+
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -5,4 +13,19 @@ body {
 
 a {
   color: #00B7FF;
+}
+p{
+    display:inline;
+    padding:5px;
+
+}
+
+.modal-header, h4, .close {
+    background-color: #00B7FF;
+    color:white !important;
+    text-align: center;
+    font-size: 30px;
+}
+.modal-footer {
+    background-color: #f9f9f9;
 }

@@ -3,15 +3,20 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "client": "node textClientCrazyEights http://localhost:3000"
   },
   "dependencies": {
     "body-parser": "~1.13.2",
     "cookie-parser": "~1.3.5",
+    "cookie-session": "^1.2.0",
     "debug": "~2.2.0",
     "ejs": "~2.3.3",
     "express": "~4.13.1",
+    "express-ejs-layouts": "^2.0.0",
     "morgan": "~1.6.1",
+    "querystring": "^0.2.0",
+    "request": "^2.65.0",
     "serve-favicon": "~2.3.0"
   }
 }
