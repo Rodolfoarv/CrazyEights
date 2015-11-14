@@ -83,20 +83,20 @@ function createGame() {
 
   stdin.once('data', data => {
 
-    let gameName = data.toString().trim();
+    let name = data.toString().trim();
 
-    if (gameName === '') {
+    if (name === '') {
       menu();
 
     } else {
       servicioWeb.invocar(
         'POST',
         '/crazyEights/createGame/',
-        {'gameName': gameName},
+        {'name': name},
         result => {
-
           if (result.created) {
-            jugar(result.simbolo);
+            console.log('Correct');
+            // jugar(result.simbolo);
             return;
 
           } else if (result.codigo === 'duplicado') {
@@ -321,14 +321,14 @@ function menu() {
 }
 
 //------------------------------------------------------------------------------
-function seleccionarJuegosDisponibles(juegos, callback) {
+function selectAvailableGames(games, callback) {
 
-  let total = juegos.length + 1;
+  let total = games.length + 1;
 
   printLn();
-  printLn('¿A qué juego deseas unirte?');
+  printLn('Which game do you wish to join?');
   for (let i = 1; i < total; i++) {
-    printLn('    (' + i + ') «' + juegos[i - 1].nombre + '»');
+    printLn('    (' + i + ') «' + games[i - 1].name + '»');
   }
   printLn('    (' + total + ') Regresar al menú principal');
   leerNumero(1, total, opcion => callback(opcion === total ? -1 : opcion - 1));
@@ -357,22 +357,22 @@ function unirJuego() {
 
   servicioWeb.invocar(
     'GET',
-    '/gato/juegos_existentes/',
+    '/crazyEights/existingGames/',
     {},
-    juegos => {
-      if (juegos.length === 0) {
+    games => {
+      if (games.length === 0) {
         printLn();
-        printLn('No hay juegos disponibles.');
+        printLn('There is no available games at this moment');
         menu();
       } else {
-        seleccionarJuegosDisponibles(juegos, opcion => {
+        selectAvailableGames(games, opcion => {
           if (opcion === -1) {
             menu();
           } else {
             servicioWeb.invocar(
               'PUT',
               '/gato/unir_juego/',
-              { id_juego: juegos[opcion].id },
+              { id_juego: games[opcion].id },
               verificarUnion
             );
           }
