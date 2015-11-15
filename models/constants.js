@@ -48,9 +48,4 @@ function draw(pack, amount, hand, initial) {
 }
 */
 
-
-/*
-exports.crearBaraja = crearBaraja;
-exports.shuffle = shuffle;
-exports.draw = draw;
-exports.TABLERO_EN_BLANCO = [[' ', ' ', ' ', ' ', ' ']];*/
+exports.DECK = shuffle(createDeck());

@@ -3,7 +3,7 @@
 This application was developed by Rodolfo Andrés Ramírez Valenzuela
 as part of the Web Development class.
 
-The application lets you play the hangman game, it uses the following technologies.
+The application lets you play the Crazy-Eights card game, it uses the following technologies.
 
 + NodeJS
 + Bootstrap and Jquery
@@ -37,4 +37,4 @@ The application lets you play the hangman game, it uses the following technologi
 
 ## License
 
-See [LICENSE] (https://github.com/Rodolfoarv/Evil-Hangman/blob/master/LICENSE)
+See [LICENSE] (https://github.com/Rodolfoarv/CrazyEights/blob/master/LICENSE)

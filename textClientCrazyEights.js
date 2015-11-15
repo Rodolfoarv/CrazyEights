@@ -96,7 +96,7 @@ function createGame() {
         result => {
           if (result.created) {
             console.log('Correct');
-            // jugar(result.simbolo);
+            jugar(result.simbolo);
             return;
 
           } else if (result.code === 'duplicated') {
@@ -127,10 +127,11 @@ function errorFatal(mensaje) {
 function esperarTurno(callback) {
   servicioWeb.invocar(
     'GET',
-    '/gato/estado/',
+    '/crazyEights/status/',
     {},
     result => {
-      if (result.estado === 'espera') {
+      if (result.status === 'espera') {
+        console.log('waiting');
         setTimeout(() => esperarTurno(callback), PAUSA);
       } else {
         printLn();
@@ -211,7 +212,7 @@ function juegoTerminado(estado) {
 function jugar(symbol) {
 
   printLn();
-  printLn('Un momento');
+  printLn('One moment please, waiting for people to connect to the game');
   esperarTurno(result => {
 
     //--------------------------------------------------------------------------
@@ -346,8 +347,9 @@ function unirJuego() {
 
   //----------------------------------------------------------------------------
   function verificarUnion(result) {
-    if (result.unido) {
-      jugar(result.simbolo);
+    if (result.joined) {
+      console.log('JOined!');
+      // jugar(result.simbolo);
     } else {
       printLn();
       printLn('No es posible unirse a ese juego.');
@@ -372,8 +374,8 @@ function unirJuego() {
           } else {
             servicioWeb.invocar(
               'PUT',
-              '/gato/unir_juego/',
-              { id_juego: games[opcion].id },
+              '/crazyEights/joinGame/',
+              { gameID: games[opcion].id },
               verificarUnion
             );
           }
