@@ -24,7 +24,7 @@ function invocadorServicioWeb(host) {
   let cookiesSesion = null;
 
   //----------------------------------------------------------------------------
-  function obtenerCookies(res) {
+  function getCookies(res) {
 
     let valorSetCookies = res.headers['set-cookie'];
 
@@ -36,7 +36,7 @@ function invocadorServicioWeb(host) {
   }
 
   //----------------------------------------------------------------------------
-  function encabezados(metodo) {
+  function headers(metodo) {
     let r = {};
     if (metodo !== 'GET') {
       r['Content-type'] = 'application/x-www-form-urlencoded';
@@ -55,7 +55,7 @@ function invocadorServicioWeb(host) {
       let opciones = {
         url: host + ruta,
         method: metodo,
-        headers: encabezados(metodo)
+        headers: headers(metodo)
       };
       let qs = querystring.stringify(params);
       if (metodo === 'GET' && qs !== '') {
@@ -68,7 +68,7 @@ function invocadorServicioWeb(host) {
         if (res.statusCode !== 200) {
           errorFatal('Not OK status code (' + res.statusCode + ')');
         }
-        obtenerCookies(res);
+        getCookies(res);
         callback(JSON.parse(body));
       });
     }
@@ -99,14 +99,15 @@ function createGame() {
             // jugar(result.simbolo);
             return;
 
-          } else if (result.codigo === 'duplicado') {
+          } else if (result.code === 'duplicated') {
             printLn();
-            printLn('Error: Alguien más ya creó un juego con este ' +
-                      'nombre: ' + name);
+            printLn('Error: Someone has created a game with this ' +
+                      'name: ' + name);
 
           } else {
             printLn();
-            printLn('No se proporcionó un nombre de juego válido.');
+            console.log(result);
+            printLn('Invalid game name, please try again');
           }
 
           menu();
@@ -268,9 +269,9 @@ function jugar(symbol) {
 }
 
 //------------------------------------------------------------------------------
-function leerNumero(inicio, fin, callback) {
+function leerNumero(start, end, callback) {
 
-  imprimir('Selecciona una opción del ' + inicio + ' al ' + fin + ': ');
+  imprimir('Choose an option between ' + start + ' and ' + end + ': ');
 
   stdin.once('data', data => {
 
@@ -281,14 +282,14 @@ function leerNumero(inicio, fin, callback) {
 
     if (/^\d+$/.test(data)) {
       num = parseInt(data);
-      if (inicio <= num && num <= fin) {
+      if (start <= num && num <= end) {
         numeroValido = true;
       }
     }
     if (numeroValido) {
       callback(num);
     } else {
-      leerNumero(inicio, fin, callback);
+      leerNumero(start, end, callback);
     }
   });
 }
@@ -337,7 +338,7 @@ function selectAvailableGames(games, callback) {
 //------------------------------------------------------------------------------
 function title() {
   printLn('Crazy Eights Game');
-  printLn('© 2013-2015 by Rodolfo Andrés Ramírez Valenzuela, ITESM CEM.');
+  printLn('© 2015 by Rodolfo Andrés Ramírez Valenzuela, ITESM CEM.');
 }
 
 //------------------------------------------------------------------------------

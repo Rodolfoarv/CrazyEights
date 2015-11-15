@@ -1,30 +1,24 @@
 'use strict';
 
-function crearBaraja() {
-  var palos = ["♠", "♥", "♦", "♣"];
+// Function that creates the 52 cards deck
+function createDeck() {
+  var classification = ["♠", "♥", "♦", "♣"];
   var pack = [];
   var n = 52;
-  var index = n / palos.length;
-
-  var count = 0;
-for(var i = 0; i <= 3; i++)
-    for(var j = 1; j <= index; j++){
-        if(j == 1)
-          pack.push('A' + palos[i]);
-        else if(j == 11)
-        pack.push('J' + palos[i]);
-        else if(j == 12)
-        pack.push('Q' + palos[i]);
-        else if(j == 13)
-        pack.push('K' + palos[i]);
-        else
-          pack.push(j + palos[i]);
+  var cardsPerClassification = n / classification.length;
+  for (var classificationIndex = 0; classificationIndex < classification.length; classificationIndex++) {
+    for (var card = 1; card <= cardsPerClassification; card++) {
+      if (card == 1) pack.push('A' + classification[classificationIndex]);
+      else if (card == 11) pack.push('J' + classification[classificationIndex]);
+      else if (card == 12) pack.push('Q' + classification[classificationIndex]);
+      else if (card == 13) pack.push('K' + classification[classificationIndex]);
+      else pack.push(card + classification[classificationIndex]);
     }
-
-
+  }
   return pack;
 }
 
+//Function that will shuffle the cards within a deck
 function shuffle(pack) {
   var i = pack.length, j, tempi, tempj;
   if (i === 0) return false;
@@ -38,6 +32,7 @@ function shuffle(pack) {
   return pack;
 }
 
+/*
 function draw(pack, amount, hand, initial) {
   var cards = new Array();
   cards = pack.slice(0, amount);
@@ -51,9 +46,11 @@ function draw(pack, amount, hand, initial) {
 
   return cards;
 }
+*/
 
 
+/*
 exports.crearBaraja = crearBaraja;
 exports.shuffle = shuffle;
 exports.draw = draw;
-exports.TABLERO_EN_BLANCO = [[' ', ' ', ' ', ' ', ' ']];
+exports.TABLERO_EN_BLANCO = [[' ', ' ', ' ', ' ', ' ']];*/

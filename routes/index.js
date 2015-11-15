@@ -46,7 +46,7 @@ router.post('/crazyEights/createGame/', (req,res) => {
         let save = promisify(game.save.bind(game));
         return save();
       }else {
-        result.code == 'duplicated';
+        result.code = 'duplicated';
         throw ABORT;
       }
     }).then(_ => {
@@ -60,6 +60,7 @@ router.post('/crazyEights/createGame/', (req,res) => {
       req.session.id_player = player._id;
       result.created = true;
       result.code = 'correct';
+      console.log('Sesion is:', req.session);
     })
     .catch(err => {
       if (err !== ABORT){
