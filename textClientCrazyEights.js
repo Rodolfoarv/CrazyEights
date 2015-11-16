@@ -61,7 +61,7 @@ function invocadorwebService(host) {
 
       request(opciones, (error, res, body) => {
         if (res.statusCode !== 200) {
-          errorFatal('Not OK status code (' + res.statusCode + ')');
+          fatalError('Not OK status code (' + res.statusCode + ')');
         }
         getCookies(res);
         callback(JSON.parse(body));
@@ -114,8 +114,8 @@ function createGame() {
 }
 
 //------------------------------------------------------------------------------
-function errorFatal(mensaje) {
-  printLn('ERROR FATAL: ' + mensaje);
+function fatalError(message) {
+  printLn('FATAL ERROR: ' + message);
   process.exit(1);
 }
 

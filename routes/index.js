@@ -41,6 +41,8 @@ router.post('/crazyEights/createGame/', (req,res) => {
       if (games.length === 0){
         game = new Game({name: name});
         console.log(game.deck);
+        game.slotsOpen--; //Decrease slots depending on the players that has joined the game succesfully
+        game.playersInGame++;
         let save = promisify(game.save.bind(game));
         return save();
       }else {
@@ -49,7 +51,8 @@ router.post('/crazyEights/createGame/', (req,res) => {
       }
     }).then(_ => {
       player = new Player({
-        game: game._id
+        game: game._id,
+        turn: game.playersInGame
       });
       console.log('created player', player);
       let save = promisify(player.save.bind(game));
@@ -58,7 +61,7 @@ router.post('/crazyEights/createGame/', (req,res) => {
       req.session.id_player = player._id;
       result.created = true;
       result.code = 'correct';
-      console.log('Sesion is:', req.session);
+      console.log('Session is:', req.session);
     })
     .catch(err => {
       if (err !== ABORT){
@@ -97,10 +100,13 @@ router.get('/crazyEights/status/', (req,res) => {
       res.json(result);
 
     }else{
-      console.log('testing the game property', game);
       if (!game.started){
+        console.log('Slots open: ', game.slotsOpen);
+        console.log('Player turn: ', player.turn);
         result.status = 'wait';
         res.json(result);
+      }else{
+        console.log('game has started');
       }
     }
   });
@@ -134,14 +140,19 @@ router.put('/crazyEights/joinGame/', (req,res) => {
       if (game.started){
         throw ABORT;
       }else{
-        game.started = true;
+        game.slotsOpen--; //Decrease slots depending on the players that has joined the game succesfully
+        game.playersInGame++;
+        if (game.slotsOpen == 4){
+          game.started = true;
+        }
         let save = promisify(game.save.bind(game));
         return save();
 
       }
     }).then(_ => {
       player = new Player({
-        game: game._id
+        game: game._id,
+        turn: game.playersInGame
       });
       let save = promisify(player.save.bind(player));
       return save();

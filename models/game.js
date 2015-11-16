@@ -8,7 +8,11 @@ var gameScheme = mongoose.Schema({
   started: {type: Boolean,
             default: false},
   deck: {type: Array,
-         default: constants.DECK }
+         default: constants.DECK },
+  slotsOpen: {type: Number,
+            default: 5, min: 0},
+  playersInGame: {type: Number,
+            default: 0, max: 5}
 });
 
 

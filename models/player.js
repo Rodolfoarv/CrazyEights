@@ -6,7 +6,8 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 var playerScheme = mongoose.Schema({
   game: ObjectId,
   hand: {type: Array,
-         default: []}
+         default: []},
+  turn: Number
 });
 //-------------------------------------------------------------------------------
 
