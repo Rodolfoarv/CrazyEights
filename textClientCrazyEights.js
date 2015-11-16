@@ -1,9 +1,4 @@
 
-
-/*
-
-*/
-
 'use strict';
 
 //------------------------------------------------------------------------------
@@ -13,13 +8,13 @@ var request       = require('request');
 //------------------------------------------------------------------------------
 var stdin         = process.stdin;
 var stdout        = process.stdout;
-var servicioWeb;
+var webService;
 const PAUSA       = 1000;          // Milisegundos entre cada petición de espera
 
 //------------------------------------------------------------------------------
 // Creador de objetos para invocar servicios web.
 
-function invocadorServicioWeb(host) {
+function invocadorwebService(host) {
 
   let cookiesSesion = null;
 
@@ -89,14 +84,15 @@ function createGame() {
       menu();
 
     } else {
-      servicioWeb.invocar(
+      webService.invocar(
         'POST',
         '/crazyEights/createGame/',
         {'name': name},
         result => {
           if (result.created) {
             console.log('Correct');
-            jugar(result.simbolo);
+            //Displays a menu that will let the host starts the game or until it is full
+            play(result.simbolo);
             return;
 
           } else if (result.code === 'duplicated') {
@@ -125,12 +121,12 @@ function errorFatal(mensaje) {
 
 //------------------------------------------------------------------------------
 function esperarTurno(callback) {
-  servicioWeb.invocar(
+  webService.invocar(
     'GET',
     '/crazyEights/status/',
     {},
     result => {
-      if (result.status === 'espera') {
+      if (result.status === 'wait') {
         console.log('waiting');
         setTimeout(() => esperarTurno(callback), PAUSA);
       } else {
@@ -209,7 +205,7 @@ function juegoTerminado(estado) {
 }
 
 //------------------------------------------------------------------------------
-function jugar(symbol) {
+function play(symbol) {
 
   printLn();
   printLn('One moment please, waiting for people to connect to the game');
@@ -219,7 +215,7 @@ function jugar(symbol) {
     function tiroEfectuado(tablero) {
       printLn();
       imprimirTablero(tablero);
-      servicioWeb.invocar(
+      webService.invocar(
         'GET',
         '/gato/estado/',
         {},
@@ -227,7 +223,7 @@ function jugar(symbol) {
           if (juegoTerminado(result.estado)) {
             menu();
           } else {
-            jugar(symbol);
+            play(symbol);
           }
         }
       );
@@ -237,7 +233,7 @@ function jugar(symbol) {
     function tiroNoEfectuado() {
       printLn();
       printLn('ERROR: Tiro inválido.');
-      jugar(symbol);
+      play(symbol);
     }
     //--------------------------------------------------------------------------
 
@@ -251,8 +247,8 @@ function jugar(symbol) {
       printLn('Tú tiras con: ' + symbol);
       printLn();
       imprimirPosicionesTablero();
-      leerNumero(0, 8, opcion => {
-        servicioWeb.invocar(
+      readOption(0, 8, opcion => {
+        webService.invocar(
           'PUT',
           '/gato/tirar/',
           { ren: Math.floor(opcion / 3), col: opcion % 3 },
@@ -270,13 +266,13 @@ function jugar(symbol) {
 }
 
 //------------------------------------------------------------------------------
-function leerNumero(start, end, callback) {
+function readOption(start, end, callback) {
 
   imprimir('Choose an option between ' + start + ' and ' + end + ': ');
 
   stdin.once('data', data => {
 
-    let numeroValido = false;
+    let validNumber = false;
     let num;
 
     data = data.toString().trim();
@@ -284,13 +280,13 @@ function leerNumero(start, end, callback) {
     if (/^\d+$/.test(data)) {
       num = parseInt(data);
       if (start <= num && num <= end) {
-        numeroValido = true;
+        validNumber = true;
       }
     }
-    if (numeroValido) {
+    if (validNumber) {
       callback(num);
     } else {
-      leerNumero(start, end, callback);
+      readOption(start, end, callback);
     }
   });
 }
@@ -306,7 +302,7 @@ function licencia() {
 //------------------------------------------------------------------------------
 function menu() {
   printMenu();
-  leerNumero(1, 3, opcion => {
+  readOption(1, 3, opcion => {
     switch (opcion) {
 
     case 1:
@@ -333,7 +329,7 @@ function selectAvailableGames(games, callback) {
     printLn('    (' + i + ') «' + games[i - 1].name + '»');
   }
   printLn('    (' + total + ') Regresar al menú principal');
-  leerNumero(1, total, opcion => callback(opcion === total ? -1 : opcion - 1));
+  readOption(1, total, opcion => callback(opcion === total ? -1 : opcion - 1));
 }
 
 //------------------------------------------------------------------------------
@@ -348,17 +344,16 @@ function unirJuego() {
   //----------------------------------------------------------------------------
   function verificarUnion(result) {
     if (result.joined) {
-      console.log('JOined!');
-      // jugar(result.simbolo);
+      play(result.simbolo);
     } else {
       printLn();
-      printLn('No es posible unirse a ese juego.');
+      printLn('It is not possible to join this game at this moment');
       menu();
     }
   }
   //----------------------------------------------------------------------------
 
-  servicioWeb.invocar(
+  webService.invocar(
     'GET',
     '/crazyEights/existingGames/',
     {},
@@ -368,14 +363,14 @@ function unirJuego() {
         printLn('There is no available games at this moment');
         menu();
       } else {
-        selectAvailableGames(games, opcion => {
-          if (opcion === -1) {
+        selectAvailableGames(games, option => {
+          if (option === -1) {
             menu();
           } else {
-            servicioWeb.invocar(
+            webService.invocar(
               'PUT',
               '/crazyEights/joinGame/',
-              { gameID: games[opcion].id },
+              { gameID: games[option].id },
               verificarUnion
             );
           }
@@ -397,6 +392,6 @@ if (process.argv.length !== 3) {
   process.exit(0);
 
 } else {
-  servicioWeb = invocadorServicioWeb(process.argv[2]);
+  webService = invocadorwebService(process.argv[2]);
   menu();
 }

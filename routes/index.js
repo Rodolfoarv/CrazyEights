@@ -37,10 +37,9 @@ router.post('/crazyEights/createGame/', (req,res) => {
     let find = promisify(Game.find.bind(Game));
     find({name: name, started:false})
     .then(arg => {
-      let games = arg[0];
+      let games = arg;
       if (games.length === 0){
         game = new Game({name: name});
-        console.log('Created game');
         console.log(game.deck);
         let save = promisify(game.save.bind(game));
         return save();
@@ -98,7 +97,8 @@ router.get('/crazyEights/status/', (req,res) => {
       res.json(result);
 
     }else{
-      if (!juego.started){
+      console.log('testing the game property', game);
+      if (!game.started){
         result.status = 'wait';
         res.json(result);
       }
@@ -129,7 +129,7 @@ router.put('/crazyEights/joinGame/', (req,res) => {
     console.log(gameID);
     findOne({_id: gameID})
     .then(arg=> {
-      game = arg[0];
+      game = arg;
 
       if (game.started){
         throw ABORT;
@@ -147,10 +147,10 @@ router.put('/crazyEights/joinGame/', (req,res) => {
       return save();
     })
     .then(_ => {
-      req.session.id_jugador = jugador._id;
+      req.session.id_player = player._id;
       result.joined = true;
       result.code = 'good';
-      console.log('joined succesfully');
+      console.log('Player with session id', player._id, 'joined succesfully');
 
     }).catch(err => {
       if (err !== ABORT){
@@ -172,11 +172,11 @@ function getGamePlayer(req,callback){
     let findOne = promisify(Player.findOne.bind(Player));
     findOne({ _id: idPlayer})
     .then(arg => {
-      player = arg[0];
+      player = arg;
       let findOne = promisify(Game.findOne.bind(Game));
       return findOne({ _id: player.game})
     }).then(arg => {
-      game = arg[0];
+      game = arg;
     })
     .catch(err => console.log(err))
     .then(_ => callback(null,game,player));
