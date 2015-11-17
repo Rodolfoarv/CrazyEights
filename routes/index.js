@@ -108,6 +108,7 @@ router.get('/crazyEights/status/', (req,res) => {
         res.json(result);
       }else if(game.turn === player.turn){
         result.status = 'your_turn';
+        result.playerHand = player.hand;
         res.json(result);
       }else{
         result.status = 'wait';
@@ -119,6 +120,18 @@ router.get('/crazyEights/status/', (req,res) => {
 });
 
 router.get('/crazyEights/existingGames/', (req,res) =>{
+  Game
+  .find({started:false})
+  .sort('name')
+  .exec((err,games) => {
+    if (err){
+      console.log(err);
+    }
+    res.json(games.map(x => ({ id: x._id, name: x.name})));
+  });
+});
+
+router.get('/crazyEights/get_game_info/', (req,res) =>{
   Game
   .find({started:false})
   .sort('name')

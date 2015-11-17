@@ -164,20 +164,6 @@ function printLn(mens) {
   stdout.write('\n');
 }
 
-//------------------------------------------------------------------------------
-function imprimirPosicionesTablero() {
-  imprimirTablero([[0, 1, 2], [3, 4, 5], [6, 7, 8]]);
-  printLn();
-}
-
-//------------------------------------------------------------------------------
-function imprimirTablero(t) {
-  printLn(' ' + t[0].join(' | '));
-  printLn('---|---|---');
-  printLn(' ' + t[1].join(' | '));
-  printLn('---|---|---');
-  printLn(' ' + t[2].join(' | '));
-}
 
 //------------------------------------------------------------------------------
 function juegoTerminado(estado) {
@@ -236,17 +222,23 @@ function play(symbol) {
       play(symbol);
     }
     //--------------------------------------------------------------------------
-
-    imprimirTablero(result.tablero);
-
     if (juegoTerminado(result.estado)) {
       menu();
 
     } else if (result.status === 'your_turn') {
       printLn();
-      printLn('It is your turn, choose an option ' + symbol); //Menu que despliega las opciones
-      printLn();
-      imprimirPosicionesTablero();
+      printLn('It is your turn, choose an option'); //Menu que despliega las opciones
+      printLn('Your current hand is: ',result.playerHand);
+      selectPlayOptions(option => {
+        if (option === -1){
+          menu();
+        }else if(option === 1){
+          printLn('pick a card!');
+        }else{
+          printLn('put a card!');
+        }
+      });
+      /*
       readOption(0, 8, opcion => {
         webService.invocar(
           'PUT',
@@ -260,7 +252,7 @@ function play(symbol) {
             }
           }
         );
-      });
+      });*/
     }
   });
 }
@@ -330,6 +322,12 @@ function selectAvailableGames(games, callback) {
   }
   printLn('    (' + total + ') Regresar al menú principal');
   readOption(1, total, opcion => callback(opcion === total ? -1 : opcion - 1));
+}
+
+function selectPlayOptions(callback){
+  printLn('(1) Pick a card');
+  printLn('(2) Put a card into the stack');
+  readOption(1,3,option => callback());
 }
 
 //------------------------------------------------------------------------------
