@@ -9,7 +9,7 @@ var gameScheme = mongoose.Schema({
             default: false},
   deck: {type: Array,
          default: constants.DECK },
-  discardMze: {type: Array,
+  discardMaze: {type: Array,
                default: []},
   slotsOpen: {type: Number,
             default: 5, min: 0},

@@ -110,6 +110,7 @@ router.get('/crazyEights/status/', (req,res) => {
       }else if(game.turn === player.turn){
         result.status = 'your_turn';
         result.playerHand = player.hand;
+        result.discardMaze = game.discardMaze;
         res.json(result);
       }else{
         result.status = 'wait';
@@ -158,9 +159,65 @@ router.put('/crazyEights/grab_card/', (req, res) => {
     }
   });
 });
+//------------------------------------------------------------------------------
 
+router.put('/crazyEights/put_card/', (req,res) => {
+
+  let result = { done: false };
+  getGamePlayer(req, (err, game, player) => {
+
+    //--------------------------------------------------------------------------
+    function guardarCambios(tablero, ren, col) {
+      tablero[ren][col] = jugador.simbolo;
+      juego.turno = contrincante(juego.turno);
+      juego.setTablero(tablero);
+      juego.save((err) => {
+        if (err) {
+          console.log(err);
+        }
+        resultado.efectuado = true;
+        resultado.tablero = tablero;
+        res.json(resultado);
+      });
+    }
+
+    //--------------------------------------------------------------------------
+    function tiroValido(tablero, ren, col) {
+      return (0 <= ren && ren <= 2) &&
+             (0 <= col && col <= 2) &&
+             tablero[ren][col] === ' ';
+    }
+    //--------------------------------------------------------------------------
+
+    if (err) {
+      console.log(err);
+      res.json(resultado);
+
+    } else {
+      let ren = convertirEntero(req.body.ren);
+      let col = convertirEntero(req.body.col);
+      if (juego.turno === jugador.simbolo) {
+        let tablero = juego.getTablero();
+        if (tiroValido(tablero, ren, col)) {
+          guardarCambios(tablero, ren, col);
+
+        } else {
+          res.json(resultado);
+        }
+
+      } else {
+        res.json(resultado);
+      }
+    }
+  });
+});
 
 router.put('/crazyEights/joinGame/', (req,res) => {
+
+  function startGame(game){
+    game.started = true;
+
+  }
   let result = {joined: false, code: 'wrongID'};
   let gameID = req.body.gameID;
   let game;
@@ -177,7 +234,8 @@ router.put('/crazyEights/joinGame/', (req,res) => {
         game.slotsOpen--; //Decrease slots depending on the players that has joined the game succesfully
         game.playersInGame++;
         if (game.slotsOpen == 3){
-          game.started = true;
+          startGame(game);
+
         }
         let save = promisify(game.save.bind(game));
         return save();
@@ -192,7 +250,6 @@ router.put('/crazyEights/joinGame/', (req,res) => {
       for (let i = 0; i < 5; i++) {
         getCard(game,player);
       }
-      console.log('SECOND PLAYER HAND', player.hand);
       let save = promisify(player.save.bind(player));
       return save();
     })

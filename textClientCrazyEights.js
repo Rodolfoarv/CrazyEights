@@ -205,7 +205,6 @@ function play(symbol) {
         {},
         result => {
             //grabbed a card
-            console.log('GOTTTIT');
             play(symbol);
 
         }
@@ -218,6 +217,26 @@ function play(symbol) {
       printLn('ERROR: Could not get any card.');
       play(symbol);
     }
+
+    function putCard(){
+      printLn();
+      webService.invocar(
+        'GET',
+        '/crazyEights/status/',
+        {},
+        result => {
+            //grabbed a card
+            if (endGame(result.status)){
+              menu();
+            }else{
+              play(symbol);
+            }
+
+
+        }
+      );
+    }
+
     //--------------------------------------------------------------------------
     if (juegoTerminado(result.estado)) {
       menu();
@@ -246,24 +265,24 @@ function play(symbol) {
 
           )
         }else{
+          console.log(result);
+          //Option that will put the card depending if the user has one of to choose
+          webService.invocar(
+            'PUT',
+            '/crazyEights/put_card',
+            {},
+            result => {
+              if (result.done){
+                putCard(result);
+              }else{
+                printLn('ERROR: Could not set any card.');
+                play(symbol);
+              }
+            }
+          )
           printLn('put a card!');
         }
       });
-      /*
-      readOption(0, 8, opcion => {
-        webService.invocar(
-          'PUT',
-          '/gato/tirar/',
-          { ren: Math.floor(opcion / 3), col: opcion % 3 },
-          result => {
-            if (result.efectuado) {
-              tiroEfectuado(result.tablero);
-            } else {
-              tiroNoEfectuado();
-            }
-          }
-        );
-      });*/
     }
   });
 }
@@ -388,6 +407,24 @@ function title() {
 }
 
 //------------------------------------------------------------------------------
+function endGame(status){
+    function mens(s) {
+    imprimirNl();
+    imprimirNl(s);
+    return true;
+  }
+
+  switch(status){
+
+    case 'win':
+      return mens('Congratulations! You have won');
+
+    case 'perdiste':
+      return mens('You have lost! Please try again!');
+    default:
+      return false;
+    }
+  }
 
 
 //------------------------------------------------------------------------------
