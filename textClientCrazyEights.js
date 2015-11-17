@@ -90,7 +90,6 @@ function createGame() {
         {'name': name},
         result => {
           if (result.created) {
-            console.log('Correct');
             //Displays a menu that will let the host starts the game or until it is full
             play(result.simbolo);
             return;
@@ -198,27 +197,25 @@ function play(symbol) {
   esperarTurno(result => {
 
     //--------------------------------------------------------------------------
-    function tiroEfectuado(tablero) {
+    function getCard() {
       printLn();
-      imprimirTablero(tablero);
       webService.invocar(
         'GET',
-        '/gato/estado/',
+        '/crazyEights/status/',
         {},
         result => {
-          if (juegoTerminado(result.estado)) {
-            menu();
-          } else {
+            //grabbed a card
+            console.log('GOTTTIT');
             play(symbol);
-          }
+
         }
       );
     }
 
     //--------------------------------------------------------------------------
-    function tiroNoEfectuado() {
+    function noCard() {
       printLn();
-      printLn('ERROR: Tiro inválido.');
+      printLn('ERROR: Could not get any card.');
       play(symbol);
     }
     //--------------------------------------------------------------------------
@@ -227,13 +224,27 @@ function play(symbol) {
 
     } else if (result.status === 'your_turn') {
       printLn();
-      printLn('It is your turn, choose an option'); //Menu que despliega las opciones
+      printLn('It is your turn, choose an option'); //Menu that displays the options
       printLn('Your current hand is: ',result.playerHand);
       selectPlayOptions(option => {
+        console.log('OPTION IS:', option);
         if (option === -1){
           menu();
-        }else if(option === 1){
-          printLn('pick a card!');
+        }else if(option === 0){
+          //Option that grabs a card from the deck and puts it into the player's hand
+          webService.invocar(
+            'PUT',
+            '/crazyEights/grab_card',
+            {},
+            result => {
+              if (result.gotCard){
+                getCard(result);
+              }else{
+                noCard();
+              }
+            }
+
+          )
         }else{
           printLn('put a card!');
         }
@@ -255,6 +266,46 @@ function play(symbol) {
       });*/
     }
   });
+}
+function unirJuego() {
+
+  //----------------------------------------------------------------------------
+  function verificarUnion(result) {
+    if (result.joined) {
+      play(result.simbolo);
+    } else {
+      printLn();
+      printLn('It is not possible to join this game at this moment');
+      menu();
+    }
+  }
+  //----------------------------------------------------------------------------
+
+  webService.invocar(
+    'GET',
+    '/crazyEights/existingGames/',
+    {},
+    games => {
+      if (games.length === 0) {
+        printLn();
+        printLn('There is no available games at this moment');
+        menu();
+      } else {
+        selectAvailableGames(games, option => {
+          if (option === -1) {
+            menu();
+          } else {
+            webService.invocar(
+              'PUT',
+              '/crazyEights/joinGame/',
+              { gameID: games[option].id },
+              verificarUnion
+            );
+          }
+        });
+      }
+    }
+  );
 }
 
 //------------------------------------------------------------------------------
@@ -327,7 +378,7 @@ function selectAvailableGames(games, callback) {
 function selectPlayOptions(callback){
   printLn('(1) Pick a card');
   printLn('(2) Put a card into the stack');
-  readOption(1,3,option => callback());
+  readOption(1,3,option => callback(option === 3 ? -1 : option - 1));
 }
 
 //------------------------------------------------------------------------------
@@ -337,46 +388,7 @@ function title() {
 }
 
 //------------------------------------------------------------------------------
-function unirJuego() {
 
-  //----------------------------------------------------------------------------
-  function verificarUnion(result) {
-    if (result.joined) {
-      play(result.simbolo);
-    } else {
-      printLn();
-      printLn('It is not possible to join this game at this moment');
-      menu();
-    }
-  }
-  //----------------------------------------------------------------------------
-
-  webService.invocar(
-    'GET',
-    '/crazyEights/existingGames/',
-    {},
-    games => {
-      if (games.length === 0) {
-        printLn();
-        printLn('There is no available games at this moment');
-        menu();
-      } else {
-        selectAvailableGames(games, option => {
-          if (option === -1) {
-            menu();
-          } else {
-            webService.invocar(
-              'PUT',
-              '/crazyEights/joinGame/',
-              { gameID: games[option].id },
-              verificarUnion
-            );
-          }
-        });
-      }
-    }
-  );
-}
 
 //------------------------------------------------------------------------------
 

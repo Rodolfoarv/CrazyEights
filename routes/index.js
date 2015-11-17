@@ -57,6 +57,7 @@ router.post('/crazyEights/createGame/', (req,res) => {
       for (let i = 0; i < 5; i++) {
         getCard(game,player);
       }
+
       let save = promisify(player.save.bind(game));
       return save();
     }).then(_ => {
@@ -144,60 +145,16 @@ router.get('/crazyEights/get_game_info/', (req,res) =>{
 });
 
 //------------------------------------------------------------------------------
-router.put('/crazyEights/put_card/', (req, res) => {
-
-  let resultado = { done: false };
-
+router.put('/crazyEights/grab_card/', (req, res) => {
+  let result = { gotCard: false };
   getGamePlayer(req, (err, game, player) => {
-
-    //--------------------------------------------------------------------------
-    function convertirEntero(s) {
-      let r = /^(0*)(\d+)$/.exec(s);
-      return r ? parseInt(r[2]) : -1;
-    }
-
-    //--------------------------------------------------------------------------
-    function saveChanges(tablero, ren, col) {
-      tablero[ren][col] = player.simbolo;
-      game.turno = contrincante(game.turno);
-      game.setTablero(tablero);
-      game.save((err) => {
-        if (err) {
-          console.log(err);
-        }
-        resultado.efectuado = true;
-        resultado.tablero = tablero;
-        res.json(resultado);
-      });
-    }
-
-    //--------------------------------------------------------------------------
-    function tiroValido(tablero, ren, col) {
-      return (0 <= ren && ren <= 2) &&
-             (0 <= col && col <= 2) &&
-             tablero[ren][col] === ' ';
-    }
-    //--------------------------------------------------------------------------
-
     if (err) {
       console.log(err);
       res.json(resultado);
-
     } else {
-      let ren = convertirEntero(req.body.ren);
-      let col = convertirEntero(req.body.col);
-      if (game.turno === player.simbolo) {
-        let tablero = game.getTablero();
-        if (tiroValido(tablero, ren, col)) {
-          saveChanges(tablero, ren, col);
-
-        } else {
-          res.json(resultado);
-        }
-
-      } else {
-        res.json(resultado);
-      }
+      getCard(game,player);
+      result.gotCard = true;
+      res.json(result);
     }
   });
 });
@@ -221,7 +178,6 @@ router.put('/crazyEights/joinGame/', (req,res) => {
         game.playersInGame++;
         if (game.slotsOpen == 3){
           game.started = true;
-          console.log('never got here');
         }
         let save = promisify(game.save.bind(game));
         return save();
@@ -236,7 +192,7 @@ router.put('/crazyEights/joinGame/', (req,res) => {
       for (let i = 0; i < 5; i++) {
         getCard(game,player);
       }
-      console.log('DECK LENGTH', game.deck.length);
+      console.log('SECOND PLAYER HAND', player.hand);
       let save = promisify(player.save.bind(player));
       return save();
     })
@@ -280,13 +236,23 @@ function getGamePlayer(req,callback){
 
 }
 
+function saveChanges(change){
+  let save = promisify(change.save.bind(change));
+  return save();
+}
+
 function getCard(game, player){
   let randomCard = game.deck[Math.floor((Math.random() *game.deck.length) + 1)];
   player.hand.push(randomCard);
   let index = game.deck.indexOf(randomCard);
   if (index > -1){
     game.deck.splice(index,1);
-    let save = promisify(game.save.bind(game));
-    return save();
-  }
+    console.log('Grabbed the card', randomCard);
+    // let save = promisify(game.save.bind(game));
+    saveChanges(game);
+    saveChanges(player);
+    console.log(player.hand);
+    console.log('Deck length', game.deck.length);
+
+}
 }
