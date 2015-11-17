@@ -215,9 +215,28 @@ router.put('/crazyEights/put_card/', (req,res) => {
 router.put('/crazyEights/joinGame/', (req,res) => {
 
   function startGame(game){
-    game.started = true;
-
+    let notEight = true;
+    let index = 0;
+    var topCard;
+    console.log(game.deck[0]);
+    //Check a card until we get a card that is not an eight
+    while(notEight){
+      topCard = game.deck[index];
+      if (topCard.substring(0,1) === 8){
+        index++;
+      }else{
+        notEight = false;
+      }
+    }
+    let deleteIndex = game.deck.indexOf(topCard);
+    if (deleteIndex > -1){
+      game.deck.splice(deleteIndex,1);
+      game.started = true;
+      game.discardMaze.push(topCard);
+      saveChanges(game);
+    }
   }
+
   let result = {joined: false, code: 'wrongID'};
   let gameID = req.body.gameID;
   let game;
