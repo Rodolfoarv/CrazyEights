@@ -30,8 +30,8 @@ router.get('/', function(req, res, next) {
 router.post('/crazyEights/createGame/', (req,res) => {
   let result = {created: false, code: 'invalid'};
   let name = req.body.name;
-  let game;
-  let player;
+  var game;
+  var player;
 
   if (name){
     let find = promisify(Game.find.bind(Game));
@@ -40,7 +40,6 @@ router.post('/crazyEights/createGame/', (req,res) => {
       let games = arg;
       if (games.length === 0){
         game = new Game({name: name});
-        console.log(game.deck);
         game.slotsOpen--; //Decrease slots depending on the players that has joined the game succesfully
         game.playersInGame++;
         let save = promisify(game.save.bind(game));
@@ -52,16 +51,18 @@ router.post('/crazyEights/createGame/', (req,res) => {
     }).then(_ => {
       player = new Player({
         game: game._id,
-        turn: game.playersInGame
+        turn: game.playersInGame,
+        hand: []
       });
-      console.log('created player', player);
+      for (let i = 0; i < 5; i++) {
+        getCard(game,player);
+      }
       let save = promisify(player.save.bind(game));
       return save();
     }).then(_ => {
       req.session.id_player = player._id;
       result.created = true;
       result.code = 'correct';
-      console.log('Session is:', req.session);
     })
     .catch(err => {
       if (err !== ABORT){
@@ -85,7 +86,7 @@ router.get('/crazyEights/status/', (req,res) => {
         return find({ player: player._id});
       })
       .then(arg => {
-        let jugadores = arg[0];
+        let playeres = arg;
         if (jugadores.length === 0) {
           let remove = promisify(game.remove.bind(game));
           return remove();
@@ -105,8 +106,12 @@ router.get('/crazyEights/status/', (req,res) => {
         console.log('Player turn: ', player.turn);
         result.status = 'wait';
         res.json(result);
+      }else if(game.turn === player.turn){
+        result.status = 'your_turn';
+        res.json(result);
       }else{
-        console.log('game has started');
+        result.status = 'wait';
+        res.json(result);
       }
     }
   });
@@ -125,6 +130,66 @@ router.get('/crazyEights/existingGames/', (req,res) =>{
   });
 });
 
+//------------------------------------------------------------------------------
+router.put('/crazyEights/put_card/', (req, res) => {
+
+  let resultado = { done: false };
+
+  getGamePlayer(req, (err, game, player) => {
+
+    //--------------------------------------------------------------------------
+    function convertirEntero(s) {
+      let r = /^(0*)(\d+)$/.exec(s);
+      return r ? parseInt(r[2]) : -1;
+    }
+
+    //--------------------------------------------------------------------------
+    function saveChanges(tablero, ren, col) {
+      tablero[ren][col] = player.simbolo;
+      game.turno = contrincante(game.turno);
+      game.setTablero(tablero);
+      game.save((err) => {
+        if (err) {
+          console.log(err);
+        }
+        resultado.efectuado = true;
+        resultado.tablero = tablero;
+        res.json(resultado);
+      });
+    }
+
+    //--------------------------------------------------------------------------
+    function tiroValido(tablero, ren, col) {
+      return (0 <= ren && ren <= 2) &&
+             (0 <= col && col <= 2) &&
+             tablero[ren][col] === ' ';
+    }
+    //--------------------------------------------------------------------------
+
+    if (err) {
+      console.log(err);
+      res.json(resultado);
+
+    } else {
+      let ren = convertirEntero(req.body.ren);
+      let col = convertirEntero(req.body.col);
+      if (game.turno === player.simbolo) {
+        let tablero = game.getTablero();
+        if (tiroValido(tablero, ren, col)) {
+          saveChanges(tablero, ren, col);
+
+        } else {
+          res.json(resultado);
+        }
+
+      } else {
+        res.json(resultado);
+      }
+    }
+  });
+});
+
+
 router.put('/crazyEights/joinGame/', (req,res) => {
   let result = {joined: false, code: 'wrongID'};
   let gameID = req.body.gameID;
@@ -132,7 +197,6 @@ router.put('/crazyEights/joinGame/', (req,res) => {
   let player;
   if (gameID){
     let findOne = promisify(Game.findOne.bind(Game));
-    console.log(gameID);
     findOne({_id: gameID})
     .then(arg=> {
       game = arg;
@@ -142,8 +206,9 @@ router.put('/crazyEights/joinGame/', (req,res) => {
       }else{
         game.slotsOpen--; //Decrease slots depending on the players that has joined the game succesfully
         game.playersInGame++;
-        if (game.slotsOpen == 4){
+        if (game.slotsOpen == 3){
           game.started = true;
+          console.log('never got here');
         }
         let save = promisify(game.save.bind(game));
         return save();
@@ -152,8 +217,13 @@ router.put('/crazyEights/joinGame/', (req,res) => {
     }).then(_ => {
       player = new Player({
         game: game._id,
-        turn: game.playersInGame
+        turn: game.playersInGame,
+        hand: []
       });
+      for (let i = 0; i < 5; i++) {
+        getCard(game,player);
+      }
+      console.log('DECK LENGTH', game.deck.length);
       let save = promisify(player.save.bind(player));
       return save();
     })
@@ -195,4 +265,15 @@ function getGamePlayer(req,callback){
     callback(new Error("The session doesn't contain the player's ID"))
   }
 
+}
+
+function getCard(game, player){
+  let randomCard = game.deck[Math.floor((Math.random() *game.deck.length) + 1)];
+  player.hand.push(randomCard);
+  let index = game.deck.indexOf(randomCard);
+  if (index > -1){
+    game.deck.splice(index,1);
+    let save = promisify(game.save.bind(game));
+    return save();
+  }
 }

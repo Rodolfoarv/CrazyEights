@@ -242,9 +242,9 @@ function play(symbol) {
     if (juegoTerminado(result.estado)) {
       menu();
 
-    } else if (result.estado === 'tu_turno') {
+    } else if (result.status === 'your_turn') {
       printLn();
-      printLn('Tú tiras con: ' + symbol);
+      printLn('It is your turn, choose an option ' + symbol); //Menu que despliega las opciones
       printLn();
       imprimirPosicionesTablero();
       readOption(0, 8, opcion => {
