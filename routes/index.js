@@ -161,19 +161,46 @@ router.get('/crazyEights/get_game_info/', (req,res) =>{
 
 //------------------------------------------------------------------------------
 router.put('/crazyEights/grab_card/', (req, res) => {
-  let result = { gotCard: false };
+  let result = { gotCard: 'reject' };
   getGamePlayer(req, (err, game, player) => {
+
     if (err) {
       console.log(err);
-      res.json(resultado);
-    } else {
-      getCard(game,player);
-      result.gotCard = true;
       res.json(result);
+    } else {
+      console.log(game.deck.length);
+      if (game.deck.length === 1){
+        result.gotCard = 'deckIsEmpty';
+        res.json(result)
+      }else{
+        getCard(game,player);
+        result.gotCard = 'accept';
+        res.json(result);
+      }
+
     }
   });
 });
 //------------------------------------------------------------------------------
+
+router.put('/crazyEights/pass_turn/', (req,res) => {
+  let result = { done: false };
+  getGamePlayer(req, (err, game, player) => {
+    if (game.deck.length === 1){
+      game.turn++;
+      if (game.turn > game.playersInGame){
+        game.turn = 1;
+      }
+      saveChanges(game);
+      result.done = true;
+      res.json(result);
+    }else{
+      res.json(result);
+    }
+
+
+  });
+});
 
 router.put('/crazyEights/put_card/', (req,res) => {
 
@@ -352,13 +379,12 @@ function saveChanges(change){
 }
 
 function getCard(game, player){
-  let randomCard = game.deck[Math.floor((Math.random() *game.deck.length) + 1)];
-  player.hand.push(randomCard);
-  let index = game.deck.indexOf(randomCard);
+  let card = game.deck[0];
+  player.hand.push(card);
+  let index = game.deck.indexOf(card);
   if (index > -1){
     game.deck.splice(index,1);
-    console.log('Grabbed the card', randomCard);
-    // let save = promisify(game.save.bind(game));
+    console.log('Grabbed the card', card);
     saveChanges(game);
     saveChanges(player);
     console.log(player.hand);

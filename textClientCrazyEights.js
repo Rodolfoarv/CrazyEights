@@ -190,7 +190,7 @@ function juegoTerminado(estado) {
 }
 
 //----------------------------dssfgfhkjhljñk--------------------------------------------------
-function play(symbol) {
+function play() {
 
   printLn();
   printLn('One moment please, waiting for people to connect to the game');
@@ -204,7 +204,7 @@ function play(symbol) {
         '/crazyEights/status/',
         {},
         result => {
-            play(symbol);
+            play();
 
         }
       );
@@ -214,7 +214,7 @@ function play(symbol) {
     function noCard() {
       printLn();
       printLn('ERROR: Could not get any card.');
-      play(symbol);
+      play();
     }
 
     function putCard(){
@@ -223,12 +223,11 @@ function play(symbol) {
         '/crazyEights/status/',
         {},
         result => {
-            //grabbed a card
-            play(symbol);
+            play();
             // if (endGame(result.status)){
             //   menu();
             // }else{
-            //   play(symbol);
+            //   play();
             // }
 
 
@@ -254,8 +253,11 @@ function play(symbol) {
             '/crazyEights/grab_card',
             {},
             result => {
-              if (result.gotCard){
+              if (result.gotCard === 'accept'){
                 getCard(result);
+              }else if (result.gotCard === 'deckIsEmpty'){
+                printLn('You must choose a card from your hand or pass');
+                play();
               }else{
                 noCard();
               }
@@ -266,7 +268,7 @@ function play(symbol) {
           printLn('The last card in the stack is: '+ result.discardMaze[result.discardMaze.length-1]);
           selectAvailableCards(result.playerHand, choice => {
             if (choice === -1) {
-              play(symbol);
+              play();
             } else {
               webService.invocar(
                 'PUT',
@@ -277,12 +279,28 @@ function play(symbol) {
                     putCard();
                   }else{
                     printLn('ERROR: Could not set any card.');
-                    play(symbol);
+                    play();
                   }
                 }
               );
             }
           });
+        }else{
+          webService.invocar(
+            'PUT',
+            '/crazyEights/pass_turn',
+            {},
+            result => {
+              if (result.done){
+                play();
+              }else{
+                printLn('---------------------------------------------');
+                printLn('You cannot pass unless the deck is empty');
+                printLn();
+                play();
+              }
+            }
+          );
         }
       });
     }
@@ -412,7 +430,8 @@ function selectAvailableCards(cards, callback) {
 function selectPlayOptions(callback){
   printLn('(1) Pick a card');
   printLn('(2) Put a card into the stack');
-  readOption(1,3,option => callback(option === 3 ? -1 : option));
+  printLn('(3) Pass turn');
+  readOption(1,3,option => callback(option === 4 ? -1 : option));
 }
 
 //------------------------------------------------------------------------------
