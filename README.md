@@ -33,8 +33,6 @@ The application lets you play the Crazy-Eights card game, it uses the following 
 + Método que termina el juego cuando algun jugador se queda sin cartas
 + Modificar en la validación que el 8 sea un caso especial que siempre aplique y que el usuario escoga la denominación
 + Mejorar la interface que despliegue errores dependiendo de la acción y que sean responsivos e.g cuando quiere agregar una carta incorrecta
-+ Método para verificar que la pila está vacia y ya no se pueden escoger mas cartas de ahi.
-+ Método para pasar cuando la pila ya está vacia y no se tiene carta
 + Modificar que solo pueda agregar 3 cartas en un Pick
 
 
