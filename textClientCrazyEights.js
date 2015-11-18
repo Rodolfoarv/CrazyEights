@@ -263,10 +263,7 @@ function play(symbol) {
 
           )
         }else if(option === 2){
-          printLn('the last card in the stack is: '+ result.discardMaze[result.discardMaze.length-1]);
-          printLn('select a card from your hand to put it on the stack');
-          console.log(result.playerHand);
-
+          printLn('The last card in the stack is: '+ result.discardMaze[result.discardMaze.length-1]);
           selectAvailableCards(result.playerHand, choice => {
             if (choice === -1) {
               play(symbol);
@@ -286,13 +283,6 @@ function play(symbol) {
               );
             }
           });
-
-          //Option that will put the card depending if the user has one of to choose
-
-
-
-
-
         }
       });
     }
