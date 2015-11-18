@@ -28,8 +28,6 @@ The application lets you play the Crazy-Eights card game, it uses the following 
 ## TODO
 
 + put_card: Se está desplegando null en algunas cartas, verificarlo
-+ Habilitar opción para el master del juego de empezar el juego con 2 o más jugadores
-+ Habilitar que el juego acepte como maximo 5 jugadores y minimo 2 jugadores antes de habilitar la opción al master
 + Método que termina el juego cuando algun jugador se queda sin cartas
 + Modificar en la validación que el 8 sea un caso especial que siempre aplique y que el usuario escoga la denominación
 + Mejorar la interface que despliegue errores dependiendo de la acción y que sean responsivos e.g cuando quiere agregar una carta incorrecta

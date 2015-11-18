@@ -82,27 +82,30 @@ router.put('/crazyEights/start_game', function(req,res){
 
     //--------------------------------------------------------------------------
     function startGame(game){
-      let notEight = true;
-      let index = 0;
-      var topCard;
-      console.log(game.deck[0]);
-      //Check a card until we get a card that is not an eight
-      while(notEight){
-        topCard = game.deck[index];
-        if (topCard.substring(0,1) === 8){
-          index++;
-        }else{
-          notEight = false;
+      if(game.playersInGame >= 2){
+        let notEight = true;
+        let index = 0;
+        var topCard;
+        console.log(game.deck[0]);
+        //Check a card until we get a card that is not an eight
+        while(notEight){
+          topCard = game.deck[index];
+          if (topCard.substring(0,1) === 8){
+            index++;
+          }else{
+            notEight = false;
+          }
+        }
+        let deleteIndex = game.deck.indexOf(topCard);
+        if (deleteIndex > -1){
+          game.deck.splice(deleteIndex,1);
+          game.started = true;
+          result.start = true;
+          game.discardMaze.push(topCard);
+          saveChanges(game);
         }
       }
-      let deleteIndex = game.deck.indexOf(topCard);
-      if (deleteIndex > -1){
-        game.deck.splice(deleteIndex,1);
-        game.started = true;
-        result.start = true;
-        game.discardMaze.push(topCard);
-        saveChanges(game);
-      }
+
     }
     startGame(game);
 
@@ -142,8 +145,12 @@ router.get('/crazyEights/status/', (req,res) => {
         console.log('Player turn: ', player.turn);
         result.status = 'wait';
         res.json(result);
+      }else if(player.hand.length === 0){
+        result.status = 'win';
+        res.json(result);
       }else if(game.turn === player.turn){
-        result.status = 'your_turn';
+        result.status = 'win';
+        // result.status = 'your_turn';
         result.playerHand = player.hand;
         result.discardMaze = game.discardMaze;
         res.json(result);

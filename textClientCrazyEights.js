@@ -246,12 +246,11 @@ function play() {
         '/crazyEights/status/',
         {},
         result => {
-            play();
-            // if (endGame(result.status)){
-            //   menu();
-            // }else{
-            //   play();
-            // }
+            if (endGame(result.status)){
+              menu();
+            }else{
+              play();
+            }
 
 
         }
@@ -259,7 +258,7 @@ function play() {
     }
 
     //--------------------------------------------------------------------------
-    if (juegoTerminado(result.estado)) {
+    if (endGame(result.status)) {
       menu();
 
     } else if (result.status === 'your_turn') {
@@ -471,8 +470,8 @@ function title() {
 //------------------------------------------------------------------------------
 function endGame(status){
     function mens(s) {
-    imprimirNl();
-    imprimirNl(s);
+    printLn();
+    printLn(s);
     return true;
   }
 
