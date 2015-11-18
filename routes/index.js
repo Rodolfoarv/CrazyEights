@@ -114,6 +114,7 @@ router.get('/crazyEights/status/', (req,res) => {
         res.json(result);
       }else{
         result.status = 'wait';
+        console.log('result status', result);
         res.json(result);
       }
     }
@@ -132,6 +133,19 @@ router.get('/crazyEights/existingGames/', (req,res) =>{
     res.json(games.map(x => ({ id: x._id, name: x.name})));
   });
 });
+
+router.get('/crazyEights/availableCards/', (req,res) =>{
+  Game
+  .find({started:false})
+  .sort('name')
+  .exec((err,games) => {
+    if (err){
+      console.log(err);
+    }
+    res.json(games.map(x => ({ id: x._id, name: x.name})));
+  });
+});
+
 
 router.get('/crazyEights/get_game_info/', (req,res) =>{
   Game
@@ -168,22 +182,18 @@ router.put('/crazyEights/put_card/', (req,res) => {
 
     //--------------------------------------------------------------------------
     function saveChangesTurn(card) {
-      console.log('saving changes');
       let index = player.hand.indexOf(card);
-      console.log(card);
-      console.log(player.hand);
-      console.log(index);
       if (index > -1){
         player.hand.splice(index,1);
+        game.discardMaze.push(card);
         game.turn++;
-        console.log('This is the game turn', game.turn);
         if (game.turn > game.playersInGame){
           game.turn = 1;
         }
         saveChanges(game);
         saveChanges(player);
         result.done = true;
-        res.json(resultado);
+        res.json(result);
     }
   }
 

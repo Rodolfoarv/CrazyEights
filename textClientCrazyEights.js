@@ -204,7 +204,6 @@ function play(symbol) {
         '/crazyEights/status/',
         {},
         result => {
-            //grabbed a card
             play(symbol);
 
         }
@@ -218,19 +217,19 @@ function play(symbol) {
       play(symbol);
     }
 
-    function putCard(choice){
-      printLn();
+    function putCard(){
       webService.invocar(
         'GET',
         '/crazyEights/status/',
         {},
         result => {
             //grabbed a card
-            if (endGame(result.status)){
-              menu();
-            }else{
-              play(symbol);
-            }
+            play(symbol);
+            // if (endGame(result.status)){
+            //   menu();
+            // }else{
+            //   play(symbol);
+            // }
 
 
         }
@@ -244,7 +243,7 @@ function play(symbol) {
     } else if (result.status === 'your_turn') {
       printLn();
       printLn('It is your turn, choose an option'); //Menu that displays the options
-      printLn('Your current hand is: ',result.playerHand);
+      printLn('Your current hand is: ', result.playerHand);
       selectPlayOptions(option => {
         if (option === -1){
           menu();
@@ -268,24 +267,28 @@ function play(symbol) {
           printLn('select a card from your hand to put it on the stack');
           console.log(result.playerHand);
 
-          //Option that will put the card depending if the user has one of to choose
-          var stdin = process.openStdin();
-          stdin.addListener("data", function(d) {
-          let choice = d.toString().trim();
-          webService.invocar(
-            'PUT',
-            '/crazyEights/put_card',
-            {choice: choice},
-            result => {
-              if (result.done){
-                putCard(result);
-              }else{
-                printLn('ERROR: Could not set any card.');
-                play(symbol);
-              }
+          selectAvailableCards(result.playerHand, choice => {
+            if (choice === -1) {
+              play(symbol);
+            } else {
+              webService.invocar(
+                'PUT',
+                '/crazyEights/put_card',
+                {choice: choice},
+                result => {
+                  if (result.done){
+                    putCard();
+                  }else{
+                    printLn('ERROR: Could not set any card.');
+                    play(symbol);
+                  }
+                }
+              );
             }
-          );
           });
+
+          //Option that will put the card depending if the user has one of to choose
+
 
 
 
@@ -316,7 +319,7 @@ function unirJuego() {
     games => {
       if (games.length === 0) {
         printLn();
-        printLn('There is no available games at this moment');
+        printLn('There are no available games at this moment');
         menu();
       } else {
         selectAvailableGames(games, option => {
@@ -398,6 +401,19 @@ function selectAvailableGames(games, callback) {
   printLn('Which game do you wish to join?');
   for (let i = 1; i < total; i++) {
     printLn('    (' + i + ') «' + games[i - 1].name + '»');
+  }
+  printLn('    (' + total + ') Regresar al menú principal');
+  readOption(1, total, opcion => callback(opcion === total ? -1 : opcion - 1));
+}
+
+function selectAvailableCards(cards, callback) {
+
+  let total = cards.length + 1;
+
+  printLn();
+  printLn('Which card do you wish to put on the stack?');
+  for (let i = 1; i < total; i++) {
+    printLn('    (' + i + ') «' + cards[i - 1] + '»');
   }
   printLn('    (' + total + ') Regresar al menú principal');
   readOption(1, total, opcion => callback(opcion === total ? -1 : opcion - 1));

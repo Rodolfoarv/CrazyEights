@@ -27,9 +27,12 @@ The application lets you play the Crazy-Eights card game, it uses the following 
 
 ## TODO
 
-+ Add game logic within the text and web client
-+ Modify the player, game schema
-+ Join a game
++ put_card: Moverse al menu anterior cuando se selecciona la opción de poner carta
++ put_card: Se está desplegando null en algunas cartas, verificarlo
++ modificar que se despliegue el menu una vez que sea el turno otra vez.
++ Habilitar opción para el master del juego de empezar el juego con 2 o más jugadores
++ Habilitar que el juego acepte como maximo 5 jugadores y minimo 2 jugadores antes de habilitar la opción al master
+
 
 ## Authors
 
