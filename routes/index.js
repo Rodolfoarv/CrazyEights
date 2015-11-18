@@ -27,6 +27,8 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Crazy Eights Game' });
 });
 
+
+
 router.post('/crazyEights/createGame/', (req,res) => {
   let result = {created: false, code: 'invalid'};
   let name = req.body.name;
@@ -72,6 +74,39 @@ router.post('/crazyEights/createGame/', (req,res) => {
     })
     .then (_ => res.json(result));
   }
+});
+
+router.put('/crazyEights/start_game', function(req,res){
+  let result = {start: false};
+  getGamePlayer(req,(err,game,player) => {
+
+    //--------------------------------------------------------------------------
+    function startGame(game){
+      let notEight = true;
+      let index = 0;
+      var topCard;
+      console.log(game.deck[0]);
+      //Check a card until we get a card that is not an eight
+      while(notEight){
+        topCard = game.deck[index];
+        if (topCard.substring(0,1) === 8){
+          index++;
+        }else{
+          notEight = false;
+        }
+      }
+      let deleteIndex = game.deck.indexOf(topCard);
+      if (deleteIndex > -1){
+        game.deck.splice(deleteIndex,1);
+        game.started = true;
+        result.start = true;
+        game.discardMaze.push(topCard);
+        saveChanges(game);
+      }
+    }
+    startGame(game);
+
+  });
 });
 
 router.get('/crazyEights/status/', (req,res) => {
@@ -209,6 +244,7 @@ router.put('/crazyEights/put_card/', (req,res) => {
 
     //--------------------------------------------------------------------------
     function saveChangesTurn(card) {
+      console.log(game.turn);
       let index = player.hand.indexOf(card);
       if (index > -1){
         player.hand.splice(index,1);
@@ -217,6 +253,7 @@ router.put('/crazyEights/put_card/', (req,res) => {
         if (game.turn > game.playersInGame){
           game.turn = 1;
         }
+              console.log('switching turn', game.turn);
         saveChanges(game);
         saveChanges(player);
         result.done = true;
@@ -275,28 +312,7 @@ router.put('/crazyEights/put_card/', (req,res) => {
 
 router.put('/crazyEights/joinGame/', (req,res) => {
 
-  function startGame(game){
-    let notEight = true;
-    let index = 0;
-    var topCard;
-    console.log(game.deck[0]);
-    //Check a card until we get a card that is not an eight
-    while(notEight){
-      topCard = game.deck[index];
-      if (topCard.substring(0,1) === 8){
-        index++;
-      }else{
-        notEight = false;
-      }
-    }
-    let deleteIndex = game.deck.indexOf(topCard);
-    if (deleteIndex > -1){
-      game.deck.splice(deleteIndex,1);
-      game.started = true;
-      game.discardMaze.push(topCard);
-      saveChanges(game);
-    }
-  }
+
 
   let result = {joined: false, code: 'wrongID'};
   let gameID = req.body.gameID;
@@ -310,13 +326,14 @@ router.put('/crazyEights/joinGame/', (req,res) => {
 
       if (game.started){
         throw ABORT;
+      }else if(game.slotsOpen === 0){
+        throw ABORT;
       }else{
         game.slotsOpen--; //Decrease slots depending on the players that has joined the game succesfully
         game.playersInGame++;
-        if (game.slotsOpen == 3){
-          startGame(game);
-
-        }
+        // if (game.slotsOpen == 3){
+        //   startGame(game);
+        // }
         let save = promisify(game.save.bind(game));
         return save();
 

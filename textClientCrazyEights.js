@@ -73,6 +73,28 @@ function invocadorwebService(host) {
 //-------------------------sdsdsdssDSDSadadS-----------------------------------------------------
 function createGame() {
 
+  function waitContrincants(){
+    selectHostOptions( option => {
+      if (option === -1) {
+        menu();
+      } else {
+        webService.invocar(
+          'PUT',
+          '/crazyEights/start_game/',
+          {},
+          result => {
+            if (result.start){
+              play();
+            }else{
+              printLn('Unable to start the game');
+            }
+          }
+        );
+      }
+    });
+
+  }
+
   printLn();
   imprimir('Type the name of the game:');
 
@@ -91,6 +113,7 @@ function createGame() {
         result => {
           if (result.created) {
             //Displays a menu that will let the host starts the game or until it is full
+            waitContrincants();
             play(result.simbolo);
             return;
 
@@ -432,6 +455,11 @@ function selectPlayOptions(callback){
   printLn('(2) Put a card into the stack');
   printLn('(3) Pass turn');
   readOption(1,3,option => callback(option === 4 ? -1 : option));
+}
+
+function selectHostOptions(callback){
+  printLn('(1) Start game');
+  readOption(1,2,option => callback(option === 2 ? -1 : option));
 }
 
 //------------------------------------------------------------------------------
