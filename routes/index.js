@@ -167,48 +167,72 @@ router.put('/crazyEights/put_card/', (req,res) => {
   getGamePlayer(req, (err, game, player) => {
 
     //--------------------------------------------------------------------------
-    function guardarCambios(tablero, ren, col) {
-      tablero[ren][col] = jugador.simbolo;
-      juego.turno = contrincante(juego.turno);
-      juego.setTablero(tablero);
-      juego.save((err) => {
-        if (err) {
-          console.log(err);
+    function saveChangesTurn(card) {
+      console.log('saving changes');
+      let index = player.hand.indexOf(card);
+      console.log(card);
+      console.log(player.hand);
+      console.log(index);
+      if (index > -1){
+        player.hand.splice(index,1);
+        game.turn++;
+        console.log('This is the game turn', game.turn);
+        if (game.turn > game.playersInGame){
+          game.turn = 1;
         }
-        resultado.efectuado = true;
-        resultado.tablero = tablero;
+        saveChanges(game);
+        saveChanges(player);
+        result.done = true;
         res.json(resultado);
-      });
     }
+  }
 
-    //--------------------------------------------------------------------------
-    function tiroValido(tablero, ren, col) {
-      return (0 <= ren && ren <= 2) &&
-             (0 <= col && col <= 2) &&
-             tablero[ren][col] === ' ';
+    // --------------------------------------------------------------------------
+    function validCard(card) {
+      let stack = game.discardMaze[0].split('');
+        if(stack.length === 2){
+          if(card.length ===2){
+            if(stack[0] === card[0] ||stack[1] === card[1])
+              return true;
+          }else{
+            if(stack[0] === card[0] ||stack[1] === card[2])
+              return true;
+          }
+        }else if(stack.length ===3){
+          if(card.length ===2){
+            if(stack[0] === card[0] ||stack[2] === card[1])
+              return true;
+          }else{
+            if(stack[0] === card[0] ||stack[2] === card[2])
+              return true;
+            else{
+
+            }
+
+          }
+        }
     }
     //--------------------------------------------------------------------------
 
     if (err) {
       console.log(err);
-      res.json(resultado);
+      res.json(result);
 
     } else {
-      let ren = convertirEntero(req.body.ren);
-      let col = convertirEntero(req.body.col);
-      if (juego.turno === jugador.simbolo) {
-        let tablero = juego.getTablero();
-        if (tiroValido(tablero, ren, col)) {
-          guardarCambios(tablero, ren, col);
-
-        } else {
+      if (game.turn === player.turn){
+        let card = player.hand[req.body.choice].split('');
+        if (validCard(card)){
+          console.log('this is a valid card');
+          saveChangesTurn(player.hand[req.body.choice]);
+        }else{
           res.json(resultado);
         }
-
-      } else {
+      }else{
         res.json(resultado);
       }
-    }
+      }
+
+
   });
 });
 

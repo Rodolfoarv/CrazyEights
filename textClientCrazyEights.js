@@ -229,36 +229,7 @@ function play(symbol) {
             if (endGame(result.status)){
               menu();
             }else{
-            //  play(symbol);
-              let stack = result.discardMaze[0].split('');
-            /*  for(var i = 0; i < result.playerHand.length; i++){
-                let card = result.playerHand[i].split('');
-                console.log(card);
-
-              }*/
-              let card = result.playerHand[choice].split('');
-
-                if(stack.length === 2){
-                  if(card.length ===2){
-                    if(stack[0] === card[0] ||stack[1] === card[1])
-                      console.log("card accepted");
-                  }else{
-                    if(stack[0] === card[0] ||stack[1] === card[2])
-                      console.log("card accepted");
-                  }
-                }else if(stack.length ===3){
-                  if(card.length ===2){
-                    if(stack[0] === card[0] ||stack[2] === card[1])
-                      console.log("card accepted");
-                  }else{
-                    if(stack[0] === card[0] ||stack[2] === card[2])
-                      console.log("card accepted");
-                    else{
-
-                    }
-
-                  }
-                }
+              play(symbol);
             }
 
 
@@ -275,7 +246,6 @@ function play(symbol) {
       printLn('It is your turn, choose an option'); //Menu that displays the options
       printLn('Your current hand is: ',result.playerHand);
       selectPlayOptions(option => {
-        console.log('OPTION IS:', option);
         if (option === -1){
           menu();
         }else if(option === 1){
@@ -294,13 +264,18 @@ function play(symbol) {
 
           )
         }else if(option === 2){
-          console.log("-------------");
-          console.log(result);
+          printLn('the last card in the stack is: '+ result.discardMaze[result.discardMaze.length-1]);
+          printLn('select a card from your hand to put it on the stack');
+          console.log(result.playerHand);
+
           //Option that will put the card depending if the user has one of to choose
+          var stdin = process.openStdin();
+          stdin.addListener("data", function(d) {
+          let choice = d.toString().trim();
           webService.invocar(
             'PUT',
             '/crazyEights/put_card',
-            {},
+            {choice: choice},
             result => {
               if (result.done){
                 putCard(result);
@@ -309,17 +284,12 @@ function play(symbol) {
                 play(symbol);
               }
             }
-          )
-          printLn('put a card!'); //+++++++++++++++++
-          printLn('the last card in the stack is: '+ result.discardMaze);
-          printLn('select a card from your hand to put it on the stack');
-          console.log(result.playerHand);
-
-          var stdin = process.openStdin();
-          stdin.addListener("data", function(d) {
-          let choice = d.toString().trim();
-          putCard(choice-1);
+          );
           });
+
+
+
+
         }
       });
     }
