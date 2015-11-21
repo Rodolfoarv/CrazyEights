@@ -4,38 +4,177 @@
 *
 -->
 <title> The Crazy Eights game! </title>
-<div class="container">
-  <div class="page-header text-center">
-    <a href="/"> <h1><%= title %> <small> Can you defeat me? </small> </h1> </a>
-  </div>
-  <div class="text-center">
-    <a href="form" class="text-center"> <button type="button" class="btn btn-success btn-lg" > New game </button></a>
-    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#instructionsModal" > Instructions </button>
-    <!-- Modal -->
-    <div class="modal fade" id="instructionsModal" role="dialog">
-    <div class="modal-dialog">
+<div class="navbar-wrapper">
+  <div class="container">
+    <div class="navbar navbar-inverse navbar-static-top">
 
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h1 class="modal-title">Hangman Game</h1>
+        <div class="navbar-header">
+	    <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	      <span class="icon-bar"></span>
+	      <span class="icon-bar"></span>
+	      <span class="icon-bar"></span>
+	    </a>
+        <a class="navbar-brand" href="#">Crazy Eights</a>
         </div>
-        <div class="modal-body">
-          <p> <h3>Instructions:</h3> Hangman is a word-guessing game. Click or tap New Game to display
-             the letters of the alphabet and a row of dashes indicating the number of
-              letters to be guessed. Click or tap a letter. If it's in the word,
-              it replaces the dash(es). Each wrong guess results in a stroke being added to a gallows and its victim.
-               Your role is to guess the word correctly before the victim meets his grisly fate.</p>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="http://www.bootply.com" target="ext">Instructions</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+    </div>
+  </div><!-- /container -->
+</div><!-- /navbar wrapper -->
+
+
+<!-- Carousel
+================================================== -->
+<div id="myCarousel" class="carousel slide">
+  <!-- Indicators -->
+  <ol class="carousel-indicators">
+    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+    <li data-target="#myCarousel" data-slide-to="1"></li>
+    <li data-target="#myCarousel" data-slide-to="2"></li>
+  </ol>
+  <div class="carousel-inner">
+    <div class="item active">
+      <img src="/images/ce1.png" style="width:100%" class="img-responsive">
+      <div class="container">
+        <div class="carousel-caption">
+        </p>
+        </div>
+      </div>
+    </div>
+    <div class="item">
+      <img src="http://lorempixel.com/2000/600/abstract/1" class="img-responsive">
+      <div class="container">
+        <div class="carousel-caption">
+          <h1>Changes to the Grid</h1>
+          <p>Bootstrap 3 still features a 12-column grid, but many of the CSS class names have completely changed.</p>
+          <p><a class="btn btn-large btn-primary" href="#">Learn more</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="item">
+      <img src="http://placehold.it/1500X500" class="img-responsive">
+      <div class="container">
+        <div class="carousel-caption">
+          <h1>Percentage-based sizing</h1>
+          <p>With "mobile-first" there is now only one percentage-based grid.</p>
+          <p><a class="btn btn-large btn-primary" href="#">Browse gallery</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Controls -->
+  <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+    <span class="icon-prev"></span>
+  </a>
+  <a class="right carousel-control" href="#myCarousel" data-slide="next">
+    <span class="icon-next"></span>
+  </a>
+</div>
+<!-- /.carousel -->
+
+<!-- Play game -->
+<div class="row">
+  <div class="col-xs-12 text-center">
+      <button type="button" class="btn btn-success btn-lg" id="myBtn">New Game</button>
+      <!-- Modal -->
+      <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header" style="padding:35px 50px;">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4><span class="glyphicon glyphicon-pencil"></span> New game</h4>
+            </div>
+            <div class="modal-body" style="padding:40px 50px;">
+              <form action="/info" method="post" role="form">
+                <div class="form-group">
+                  <label for="nameField"> <span class="glyphicon glyphicon-user"></span> Username: </label>
+                  <input type="text" class="form-control" id="nameField" name="name" placeholder="What is your name?" />
+                </div>
+                <div class="form-group">
+                  <label for="lengthField"><span class="glyphicon glyphicon-eye-open"></span> Word Length:</label>
+                  <input type="number" class="form-control" id="lengthField" name="wordLength" placeholder="What is the word length?" />
+                </div>
+
+                <div class="form-group">
+                  <label for="livesField"><span class="glyphicon glyphicon-text-width"></span> Number of lives:</label>
+                  <input type="number" class="form-control" id="livesField" name="numberOfLives" placeholder="Specify the number of lives" />
+                </div>
+
+                  <button type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span> Submit</button>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+            </div>
+          </div>
+
         </div>
       </div>
 
-    </div>
+    <script>
+    $(document).ready(function(){
+        $("#myBtn").click(function(){
+            $("#myModal").modal();
+        });
+    });
+    </script>
   </div>
-  </div>
-
-
 </div>
+
+<!-- /Play game -->
+
+<!-- Marketing messaging and featurettes
+================================================== -->
+<!-- Wrap the rest of the page in another container to center all the content. -->
+
+
+
+  <!-- START THE FEATURETTES -->
+
+  <hr class="featurette-divider">
+
+  <div class="featurette">
+    <img class="featurette-image img-circle pull-right" src="images/Rodolfo.jpg">
+    <h2 class="featurette-heading">Rodolfo Andrés Ramírez Valenzuela </h2>
+     <p class="lead">Student of computer systems engineering on his 7th semester</p>
+  </div>
+
+  <hr class="featurette-divider">
+
+  <div class="featurette">
+    <img class="featurette-image img-circle pull-left" src="images/luis.jpg">
+    <h2 class="featurette-heading">Luis Eduardo Ballinas Aguilar </h2>
+    <p class="lead">Student of computer systems engineering on his 7th semester</p>
+  </div>
+
+  <hr class="featurette-divider">
+
+  <div class="featurette">
+    <img class="featurette-image img-circle pull-right" src="images/enrique.jpg">
+    <h2 class="featurette-heading">Enrique Scherer </h2>
+    <p class="lead">Student of computer systems engineering on his 7th semester</p>
+  </div>
+
+  <hr class="featurette-divider">
+
+  <!-- /END THE FEATURETTES -->
+
+
+  <!-- FOOTER -->
+  <footer>
+    <p class="pull-right"><a href="#">Back to top</a></p>
+    <p>Project being developed for the class <a href="http://webcem01.cem.itesm.mx:8005/apps/s201513/tc2026/noticias/">Web Applications Development</a></p>
+  </footer>
+
+</div><!-- /.container -->
+	<!-- script references -->
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>

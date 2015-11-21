@@ -149,7 +149,6 @@ function esperarTurno(callback) {
     {},
     result => {
       if (result.status === 'wait') {
-        console.log('waiting');
         setTimeout(() => esperarTurno(callback), PAUSA);
       } else {
         printLn();
@@ -212,11 +211,8 @@ function juegoTerminado(estado) {
   }
 }
 
-//----------------------------dssfgfhkjhljñk--------------------------------------------------
+//------------------------------------------------------------------------------
 function play() {
-
-  printLn();
-  printLn('One moment please, waiting for people to connect to the game');
   esperarTurno(result => {
 
     //--------------------------------------------------------------------------
@@ -264,7 +260,6 @@ function play() {
     } else if (result.status === 'your_turn') {
       printLn();
       printLn('It is your turn, choose an option'); //Menu that displays the options
-      printLn('Your current hand is: ', result.playerHand);
       selectPlayOptions(option => {
         if (option === -1){
           menu();
@@ -450,9 +445,11 @@ function selectAvailableCards(cards, callback) {
 }
 
 function selectPlayOptions(callback){
+  printLn('<==============<<<=>>>=================>');
   printLn('(1) Pick a card');
   printLn('(2) Put a card into the stack');
   printLn('(3) Pass turn');
+  printLn('<==============<<<=>>>=================>');
   readOption(1,3,option => callback(option === 4 ? -1 : option));
 }
 

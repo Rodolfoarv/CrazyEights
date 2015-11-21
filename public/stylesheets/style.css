@@ -29,3 +29,10 @@ p{
 .modal-footer {
     background-color: #f9f9f9;
 }
+
+.carousel-inner > .item > img,
+.carousel-inner > .item > a > img {
+    width: 1024px;
+    height: 768px;
+    margin: auto;
+}
