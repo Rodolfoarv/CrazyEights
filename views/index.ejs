@@ -81,7 +81,16 @@
 <!-- Play game -->
 <div class="row">
   <div class="col-xs-12 text-center">
-      <button type="button" class="btn btn-success btn-lg" id="myBtn">New Game</button>
+      <button type="button" class="btn btn-success btn-lg" id="newBtn">New Game</button>
+      <button type="button" class="btn btn-info btn-lg" id="joinBtn">Join Game</button>
+
+      <div id="seccion_mensajes" class="invisible">
+  <p id="mensaje_1">
+  </p>
+  <button id='boton_mensajes_regresar_al_menu' class="invisible regresar_al_menu">
+    Menú principal
+  </button>
+</div>
       <!-- Modal -->
       <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog">
@@ -93,22 +102,14 @@
               <h4><span class="glyphicon glyphicon-pencil"></span> New game</h4>
             </div>
             <div class="modal-body" style="padding:40px 50px;">
-              <form action="/info" method="post" role="form">
+
+              <form id="form_game_name" method="post">
                 <div class="form-group">
-                  <label for="nameField"> <span class="glyphicon glyphicon-user"></span> Username: </label>
-                  <input type="text" class="form-control" id="nameField" name="name" placeholder="What is your name?" />
-                </div>
-                <div class="form-group">
-                  <label for="lengthField"><span class="glyphicon glyphicon-eye-open"></span> Word Length:</label>
-                  <input type="number" class="form-control" id="lengthField" name="wordLength" placeholder="What is the word length?" />
+                  <label for="game_name"> <span class="glyphicon glyphicon-user"></span> Game Name: </label>
+                  <input type="text" class="form-control" id="game_name" name="name" placeholder="What is your name?" />
                 </div>
 
-                <div class="form-group">
-                  <label for="livesField"><span class="glyphicon glyphicon-text-width"></span> Number of lives:</label>
-                  <input type="number" class="form-control" id="livesField" name="numberOfLives" placeholder="Specify the number of lives" />
-                </div>
-
-                  <button type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span> Submit</button>
+                  <button id="btn_continue_create_game" type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span> Submit</button>
               </form>
             </div>
             <div class="modal-footer">
@@ -121,7 +122,7 @@
 
     <script>
     $(document).ready(function(){
-        $("#myBtn").click(function(){
+        $("#newBtn").click(function(){
             $("#myModal").modal();
         });
     });
