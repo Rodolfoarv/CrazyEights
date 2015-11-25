@@ -5,6 +5,10 @@ body {
   color: #5a5a5a;
 }
 
+.btn-group {
+    z-index: 1051;
+}
+
 
 
 /* CUSTOMIZE THE NAVBAR

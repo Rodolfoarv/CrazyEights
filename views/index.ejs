@@ -8,14 +8,15 @@
     <div id="main_screen">
   <div class="row">
     <div class="col-xs-12 text-center">
+      <!-- New Modal -->
         <button type="button" class="btn btn-success btn-lg" id="new_btn">New Game</button>
-        <button type="button" class="btn btn-info btn-lg" id="join_btn">Join Game</button>
 
-        <!-- Modal -->
+
+
         <div class="modal fade" id="new_modal" role="dialog">
           <div class="modal-dialog">
 
-            <!-- Modal content-->
+            <!-- New Modal content-->
             <div class="modal-content">
               <div class="modal-header" style="padding:35px 50px;">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -39,6 +40,30 @@
 
           </div>
         </div>
+        <!-- **************************************** Join Modal ******************************** -->
+        <button type="button" class="btn btn-info btn-lg" id="join_btn">Join Game</button>
+        <div class="modal fade " id="join_modal" role="dialog">
+          <div class="modal-dialog modal-sm">
+
+            <!-- New Modal content-->
+            <div class="modal-content">
+              <div class="modal-header" style="padding:35px 50px;">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4><span class="glyphicon glyphicon-plus"></span> Select a game to join:</h4>
+              </div>
+              <div class="modal-body" style="padding:40px 50px;">
+                <select id=games class="selectpicker show-tick">
+                </select>
+
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+                <button id="btn_continue_create_game" type="submit" class="btn btn-success"><span class="glyphicon glyphicon-off"></span> Submit</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
 
 
     </div>
@@ -46,6 +71,8 @@
 
 
 </div> <!-- /Main container -->
+
+
 <div class="hidden text-center" id="start_game">
   <h2 id="create_player_msg"> Waiting for players to join the game.... </h2>
   <button type="button" class="btn btn-success btn-lg" id="start_btn">Start Game</button>

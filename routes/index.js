@@ -184,30 +184,6 @@ router.get('/crazyEights/existingGames/', (req,res) =>{
   });
 });
 
-router.get('/crazyEights/availableCards/', (req,res) =>{
-  Game
-  .find({started:false})
-  .sort('name')
-  .exec((err,games) => {
-    if (err){
-      console.log(err);
-    }
-    res.json(games.map(x => ({ id: x._id, name: x.name})));
-  });
-});
-
-
-router.get('/crazyEights/get_game_info/', (req,res) =>{
-  Game
-  .find({started:false})
-  .sort('name')
-  .exec((err,games) => {
-    if (err){
-      console.log(err);
-    }
-    res.json(games.map(x => ({ id: x._id, name: x.name})));
-  });
-});
 
 //------------------------------------------------------------------------------
 router.put('/crazyEights/grab_card/', (req, res) => {

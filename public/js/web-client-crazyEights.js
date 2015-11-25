@@ -10,9 +10,36 @@ $(document).ready(() =>{
   $('#btn_continue_create_game').click(continueCreateGame);
   $('#new_btn').click(showNewModal);
   $('#start_btn').click(waitContrincants);
+  $('#join_btn').click(showJoinModal);
+
 
   function showNewModal(){
     $('#new_modal').modal();
+  }
+
+  function showJoinModal(){
+    $('#join_modal').modal();
+    $.ajax({
+      url: '/crazyEights/existingGames/',
+      type: 'GET',
+      dataType: 'json',
+      error: errorConexion,
+      success: result => {
+        if (result.length === 0) {
+          //There are no available games at this moment
+        } else {
+          var r = result.map(x => {
+            return '<option value="' + x.id + '">' +
+              escaparHtml(x.name) + '</option>';
+          });
+          $('#games').html(r.join('')).selectpicker('refresh');
+          }
+        }
+      });
+
+    //  $('#games')
+    //  .html('<option> city1 </option>').selectpicker('refresh');
+
   }
 
 
