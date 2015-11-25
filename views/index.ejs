@@ -1,181 +1,53 @@
-<!--
-* Authors:
-*           Rodolfo Andrés Ramírez Valenzuela
-*
--->
-<title> The Crazy Eights game! </title>
-<div class="navbar-wrapper">
-  <div class="container">
-    <div class="navbar navbar-inverse navbar-static-top">
+<title> The Hangman game! </title>
+<div class="container">
 
-        <div class="navbar-header">
-	    <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-	      <span class="icon-bar"></span>
-	      <span class="icon-bar"></span>
-	      <span class="icon-bar"></span>
-	    </a>
-        <a class="navbar-brand" href="#">Crazy Eights</a>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="http://www.bootply.com" target="ext">Instructions</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </div>
-
+    <div class="page-header text-center">
+      <a href="/"> <h1><%= title %> <small> Are you crazy enough? </small> </h1> </a>
     </div>
-  </div><!-- /container -->
-</div><!-- /navbar wrapper -->
+  <!-- Play game -->
+    <div id="main_screen">
+  <div class="row">
+    <div class="col-xs-12 text-center">
+        <button type="button" class="btn btn-success btn-lg" id="new_btn">New Game</button>
+        <button type="button" class="btn btn-info btn-lg" id="join_btn">Join Game</button>
 
+        <!-- Modal -->
+        <div class="modal fade" id="new_modal" role="dialog">
+          <div class="modal-dialog">
 
-<!-- Carousel
-================================================== -->
-<div id="myCarousel" class="carousel slide">
-  <!-- Indicators -->
-  <ol class="carousel-indicators">
-    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-    <li data-target="#myCarousel" data-slide-to="1"></li>
-    <li data-target="#myCarousel" data-slide-to="2"></li>
-  </ol>
-  <div class="carousel-inner">
-    <div class="item active">
-      <img src="/images/ce1.png" style="width:100%" class="img-responsive">
-      <div class="container">
-        <div class="carousel-caption">
-        </p>
-        </div>
-      </div>
-    </div>
-    <div class="item">
-      <img src="http://lorempixel.com/2000/600/abstract/1" class="img-responsive">
-      <div class="container">
-        <div class="carousel-caption">
-          <h1>Changes to the Grid</h1>
-          <p>Bootstrap 3 still features a 12-column grid, but many of the CSS class names have completely changed.</p>
-          <p><a class="btn btn-large btn-primary" href="#">Learn more</a></p>
-        </div>
-      </div>
-    </div>
-    <div class="item">
-      <img src="http://placehold.it/1500X500" class="img-responsive">
-      <div class="container">
-        <div class="carousel-caption">
-          <h1>Percentage-based sizing</h1>
-          <p>With "mobile-first" there is now only one percentage-based grid.</p>
-          <p><a class="btn btn-large btn-primary" href="#">Browse gallery</a></p>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Controls -->
-  <a class="left carousel-control" href="#myCarousel" data-slide="prev">
-    <span class="icon-prev"></span>
-  </a>
-  <a class="right carousel-control" href="#myCarousel" data-slide="next">
-    <span class="icon-next"></span>
-  </a>
-</div>
-<!-- /.carousel -->
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header" style="padding:35px 50px;">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4><span class="glyphicon glyphicon-pencil"></span> New game</h4>
+              </div>
+              <div class="modal-body" style="padding:40px 50px;">
 
-<!-- Play game -->
-<div class="row">
-  <div class="col-xs-12 text-center">
-      <button type="button" class="btn btn-success btn-lg" id="newBtn">New Game</button>
-      <button type="button" class="btn btn-info btn-lg" id="joinBtn">Join Game</button>
+                <form id="form_game_name" method="post">
+                  <div class="form-group">
+                    <label for="game_name"> <span class="glyphicon glyphicon-user"></span> Game Name: </label>
+                    <input type="text" class="form-control" id="game_name" name="name" placeholder="What is your name?" />
+                  </div>
 
-      <div id="seccion_mensajes" class="invisible">
-  <p id="mensaje_1">
-  </p>
-  <button id='boton_mensajes_regresar_al_menu' class="invisible regresar_al_menu">
-    Menú principal
-  </button>
-</div>
-      <!-- Modal -->
-      <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
-
-          <!-- Modal content-->
-          <div class="modal-content">
-            <div class="modal-header" style="padding:35px 50px;">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4><span class="glyphicon glyphicon-pencil"></span> New game</h4>
+                    <button id="btn_continue_create_game" type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span> Submit</button>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+              </div>
             </div>
-            <div class="modal-body" style="padding:40px 50px;">
 
-              <form id="form_game_name" method="post">
-                <div class="form-group">
-                  <label for="game_name"> <span class="glyphicon glyphicon-user"></span> Game Name: </label>
-                  <input type="text" class="form-control" id="game_name" name="name" placeholder="What is your name?" />
-                </div>
-
-                  <button id="btn_continue_create_game" type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span> Submit</button>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
-            </div>
           </div>
-
         </div>
-      </div>
 
-    <script>
-    $(document).ready(function(){
-        $("#newBtn").click(function(){
-            $("#myModal").modal();
-        });
-    });
-    </script>
+
+    </div>
   </div>
+
+
+</div> <!-- /Main container -->
+<div class="hidden text-center" id="start_game">
+  <h2 id="create_player_msg"> Waiting for players to join the game.... </h2>
+  <button type="button" class="btn btn-success btn-lg" id="start_btn">Start Game</button>
 </div>
-
-<!-- /Play game -->
-
-<!-- Marketing messaging and featurettes
-================================================== -->
-<!-- Wrap the rest of the page in another container to center all the content. -->
-
-
-
-  <!-- START THE FEATURETTES -->
-
-  <hr class="featurette-divider">
-
-  <div class="featurette">
-    <img class="featurette-image img-circle pull-right" src="images/Rodolfo.jpg">
-    <h2 class="featurette-heading">Rodolfo Andrés Ramírez Valenzuela </h2>
-     <p class="lead">Student of computer systems engineering on his 7th semester</p>
-  </div>
-
-  <hr class="featurette-divider">
-
-  <div class="featurette">
-    <img class="featurette-image img-circle pull-left" src="images/luis.jpg">
-    <h2 class="featurette-heading">Luis Eduardo Ballinas Aguilar </h2>
-    <p class="lead">Student of computer systems engineering on his 7th semester</p>
-  </div>
-
-  <hr class="featurette-divider">
-
-  <div class="featurette">
-    <img class="featurette-image img-circle pull-right" src="images/enrique.jpg">
-    <h2 class="featurette-heading">Enrique Scherer </h2>
-    <p class="lead">Student of computer systems engineering on his 7th semester</p>
-  </div>
-
-  <hr class="featurette-divider">
-
-  <!-- /END THE FEATURETTES -->
-
-
-  <!-- FOOTER -->
-  <footer>
-    <p class="pull-right"><a href="#">Back to top</a></p>
-    <p>Project being developed for the class <a href="http://webcem01.cem.itesm.mx:8005/apps/s201513/tc2026/noticias/">Web Applications Development</a></p>
-  </footer>
-
-</div><!-- /.container -->
-	<!-- script references -->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-		<script src="js/bootstrap.min.js"></script>
+</div>

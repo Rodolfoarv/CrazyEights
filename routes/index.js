@@ -73,8 +73,15 @@ router.post('/crazyEights/createGame/', (req,res) => {
       }
     })
     .then (_ => res.json(result));
+
   }
+
 });
+
+router.get('/crazyEights/play', function(req, res){
+  console.log('Trolololo');
+  res.render('play', { title: 'Crazy Eights Game' });
+})
 
 router.put('/crazyEights/start_game', function(req,res){
   let result = {start: false};
@@ -103,9 +110,10 @@ router.put('/crazyEights/start_game', function(req,res){
           result.start = true;
           game.discardMaze.push(topCard);
           saveChanges(game);
+
         }
       }
-
+      res.json(result);
     }
     startGame(game);
 
