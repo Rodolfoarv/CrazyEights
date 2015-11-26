@@ -1,6 +1,8 @@
 'use strict';
 const PAUSA = 1000;
 
+
+
 $(document).ready(() =>{
 
   //----------------------------------------------------------------------------
@@ -8,6 +10,7 @@ $(document).ready(() =>{
 
 
   $('#btn_continue_create_game').click(continueCreateGame);
+  $('#btn_continue_join_game').click(continueJoinGame);
   $('#new_btn').click(showNewModal);
   $('#start_btn').click(waitContrincants);
   $('#join_btn').click(showJoinModal);
@@ -73,6 +76,7 @@ function waitContrincants(){
     if (name === '') {
       mensajeError('The game name cannot be empty');
     } else {
+      console.log('got here');
       $.ajax({
         url: '/crazyEights/createGame/',
         type: 'POST',
@@ -82,6 +86,7 @@ function waitContrincants(){
         },
         error: errorConexion,
         success: result => {
+          console.log(result);
           var text;
           if (result.created) {
                 $('#main_screen').hide();
@@ -111,6 +116,26 @@ function waitContrincants(){
       });
     }
     return false; // Se requiere para evitar que la forma haga un "submit".
+  }
+
+  function continueJoinGame(){
+    var game_id = $('#games').val();
+    $.ajax({
+      url: '/crazyEights/joinGame/',
+      type: 'PUT',
+      dataType: 'json',
+      data: { game_id: game_id },
+      error: errorConexion,
+      success: result => {
+        if (result.joined) {
+          $('#main_screen').hide();
+          $("#join_modal").modal('hide');
+          $('#play').toggleClass('hidden');
+          // esperaTurno();
+        }
+      }
+    });
+
   }
 
     //----------------------------------------------------------------------------

@@ -305,12 +305,12 @@ router.put('/crazyEights/joinGame/', (req,res) => {
 
 
   let result = {joined: false, code: 'wrongID'};
-  let gameID = req.body.gameID;
+  let game_id = req.body.game_id;
   let game;
   let player;
-  if (gameID){
+  if (game_id){
     let findOne = promisify(Game.findOne.bind(Game));
-    findOne({_id: gameID})
+    findOne({_id: game_id})
     .then(arg=> {
       game = arg;
 

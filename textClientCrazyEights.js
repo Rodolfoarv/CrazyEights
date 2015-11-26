@@ -354,7 +354,7 @@ function unirJuego() {
             webService.invocar(
               'PUT',
               '/crazyEights/joinGame/',
-              { gameID: games[option].id },
+              { game_id: games[option].id },
               verificarUnion
             );
           }

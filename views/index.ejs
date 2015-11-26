@@ -27,7 +27,7 @@
                 <form id="form_game_name" method="post">
                   <div class="form-group">
                     <label for="game_name"> <span class="glyphicon glyphicon-user"></span> Game Name: </label>
-                    <input type="text" class="form-control" id="game_name" name="name" placeholder="What is your name?" />
+                    <input type="text" class="form-control" id="game_name" name="name" placeholder="What is the name of the game?" />
                   </div>
 
                     <button id="btn_continue_create_game" type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span> Submit</button>
@@ -58,7 +58,7 @@
               </div>
               <div class="modal-footer">
                 <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
-                <button id="btn_continue_create_game" type="submit" class="btn btn-success"><span class="glyphicon glyphicon-off"></span> Submit</button>
+                <button id="btn_continue_join_game" type="submit" class="btn btn-success"><span class="glyphicon glyphicon-off"></span> Join</button>
               </div>
             </div>
 
@@ -68,7 +68,9 @@
 
     </div>
   </div>
-
+    <div class="player-cards">
+    <div class="card1 card ace-of-clubs" data-value="11"></div>
+  </div>
 
 </div> <!-- /Main container -->
 
@@ -76,5 +78,9 @@
 <div class="hidden text-center" id="start_game">
   <h2 id="create_player_msg"> Waiting for players to join the game.... </h2>
   <button type="button" class="btn btn-success btn-lg" id="start_btn">Start Game</button>
+</div>
+
+<div class="hidden text-center" id="play">
+  <h1> playing </h1>
 </div>
 </div>
