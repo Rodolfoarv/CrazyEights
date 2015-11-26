@@ -68,19 +68,56 @@
 
     </div>
   </div>
-    <div class="player-cards">
-    <div class="card1 card ace-of-clubs" data-value="11"></div>
-  </div>
+
+
 
 </div> <!-- /Main container -->
 
-
+<!-- Start game -->
 <div class="hidden text-center" id="start_game">
+  <div id="start_alert" class="alert alert-danger alert-dismissable hidden">
+    Cannot start game at this time, there's not enough players at this moment.
+  </div>
   <h2 id="create_player_msg"> Waiting for players to join the game.... </h2>
   <button type="button" class="btn btn-success btn-lg" id="start_btn">Start Game</button>
 </div>
+<!-- /Start game -->
 
-<div class="hidden text-center" id="play">
-  <h1> playing </h1>
+<!-- Play Game -->
+<div class="hidden" id="play_game">
+  <div class="text-center">
+    <h1 id="play_title"> </h1>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+            <div class='dealer-cards'>
+              <h2> Pick a card </h2>
+              <div id="grab_card" class='btn card ace-of-clubs flipped'></div>
+              <h2> Last card on the deck </h2>
+              <div class='card ace-of-clubs'></div>
+              <div class='new-cards'></div>
+        	     <div class='clear'></div>
+               <div id='dealerTotal' class='dealer-total'></div>
+             </div>
+      </div>
+
+      <div class="col-md-8 text-center">
+        <div class='player-cards'>
+          <h2> Your hand: </h2>
+          <div class='card new-cards ace-of-clubs'></div>
+          <div class='card new-cards ace-of-clubs'></div>
+          <div class='card new-cards ace-of-clubs'></div>
+        </div>
+
+      </div>
+
+
+    <!-- Player hand -->
+
+  </div>
 </div>
+
+<!-- /PlayGame -->
+
+
 </div>

@@ -14,6 +14,31 @@ $(document).ready(() =>{
   $('#new_btn').click(showNewModal);
   $('#start_btn').click(waitContrincants);
   $('#join_btn').click(showJoinModal);
+  $('#grab_card').click(grabCard);
+
+  function grabCard(){
+    $.ajax({
+      url: '/crazyEights/grab_card/',
+      type: 'PUT',
+      dataType: 'json',
+      data: {},
+      error: errorConexion,
+      success: result => {
+        if (result.gotCard === 'accept'){
+          //Get card
+          alert('ok');
+          console.log(result);
+
+        }else if(result.gotCard === 'deckIsEmpty'){
+          console.log('Deck is empty');
+        }else{
+          //Error, no card
+          $('#start_alert').toggleClass('hidden');
+        }
+      }
+    });
+
+  }
 
 
   function showNewModal(){
@@ -45,6 +70,10 @@ $(document).ready(() =>{
 
   }
 
+  function play(hand){
+    
+  }
+
 
 
 function waitContrincants(){
@@ -57,10 +86,11 @@ function waitContrincants(){
     success: result => {
       console.log(result);
       if (result.start){
-        alert('Time to start!');
+        $('#start_game').hide();
+        waitTurn();
       }else{
-        alert('Not ready yet!');
-        //Show the alert
+        //Error, cannot start the game
+        $('#start_alert').toggleClass('hidden');
       }
     }
   });
@@ -128,10 +158,8 @@ function waitContrincants(){
       error: errorConexion,
       success: result => {
         if (result.joined) {
-          $('#main_screen').hide();
           $("#join_modal").modal('hide');
-          $('#play').toggleClass('hidden');
-          // esperaTurno();
+          waitTurn();
         }
       }
     });
@@ -156,15 +184,12 @@ function waitContrincants(){
 
   //----------------------------------------------------------------------------
 function waitTurn() {
-
-  var segundos = 0;
-
-  $('body').css('cursor', 'wait');
+  var seconds = 0;
   function ticToc() {
-    // $('#mensaje_3').html('Llevas ' + segundos + ' segundo' +
-    //   (segundos === 1 ? '' : 's') + ' esperando.');
-    console.log('You have been waiting: ', segundos);
-    segundos++;
+
+    seconds++;
+    // $('#mensaje_3').html('Llevas ' + seconds + ' segundo' +
+    //   (seconds === 1 ? '' : 's') + ' esperando.');
     $.ajax({
       url: '/crazyEights/status/',
       type: 'GET',
@@ -176,18 +201,17 @@ function waitTurn() {
         switch (result.status) {
 
         case 'your_turn':
-          console.log('My turn');
-          turnoTirar(result.tablero);
+        console.log('my turn');
+          $('#play_game').toggleClass('hidden');
+          $('#play_title').html('It is your turn: ');
+          play(result.playerHand);
           break;
 
         case 'wait':
+          console.log(seconds);
           setTimeout(ticToc, PAUSA);
           break;
 
-        case 'empate':
-          actualizar(result.tablero);
-          finDeJuego('<strong>Empate.</strong>');
-          break;
 
         case 'ganaste':
           finDeJuego('<strong>Ganaste.</strong> ¡Felicidades!');
