@@ -26,8 +26,9 @@ $(document).ready(() =>{
       success: result => {
         if (result.gotCard === 'accept'){
           //Get card
-          alert('ok');
           console.log(result);
+          getCard(result.card);
+
 
         }else if(result.gotCard === 'deckIsEmpty'){
           console.log('Deck is empty');
@@ -71,7 +72,27 @@ $(document).ready(() =>{
   }
 
   function play(hand){
-    
+    console.log(hand);
+    for (var i = 0; i < hand.length; i++) {
+      getCard(hand[i]);
+    }
+
+  }
+
+  function getCard(card){
+    var splitCard = card.split('');
+    if (splitCard.length === 2){
+      var value = getNumber(splitCard[0]);
+      var classification = getClassification(splitCard[1]);
+      var card = value+classification;
+    }else{
+      var value = 'ten';
+      var classification = getClassification(splitCard[2]);
+      var card = value+classification;
+    }
+    var newCard = "<div class='btn card " + card + "'</div>'";
+    $('.player-cards .new-cards').append(newCard);
+    $('.player-cards').width($('.player-cards').width()+84);
   }
 
 
@@ -196,7 +217,6 @@ function waitTurn() {
       dataType: 'json',
       error: errorConexion,
       success: result => {
-        console.log(result);
 
         switch (result.status) {
 
@@ -229,6 +249,48 @@ function waitTurn() {
   };
   setTimeout(ticToc, 0);
 };
+
+function getClassification(symbol){
+  if(symbol === '♠'){
+    return '-of-diamonds';
+  }else if(symbol === '♥'){
+    return '-of-hearts'
+  }else if(symbol === '♦'){
+    return '-of-spades'
+  }else{ //♣
+    return '-of-clubs'
+  }
+}
+
+function getNumber(num){
+  if(num === 'A'){
+    return 'ace';
+  }else if(num == 2){
+    return 'two';
+  }else if(num == 3){
+    return 'three';
+  }else if(num == 4){
+    return 'four';
+  }else if(num == 5){
+    return 'five';
+  }else if(num == 6){
+    return 'six';
+  }else if(num == 7){
+    return 'seven';
+  }else if(num == 8){
+    return 'eight';
+  }else if(num == 9){
+    return 'nine';
+  }else if(num == 10){
+    return 'ten';
+  }else if(num === 'J'){
+    return 'jack';
+  }else if(num === 'Q'){
+    return 'queen';
+  }else if(num === 'K'){
+    return 'king';
+  }
+}
 
 
 });

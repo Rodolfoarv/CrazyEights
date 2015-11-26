@@ -78,11 +78,6 @@ router.post('/crazyEights/createGame/', (req,res) => {
 
 });
 
-router.get('/crazyEights/play', function(req, res){
-  console.log('Trolololo');
-  res.render('play', { title: 'Crazy Eights Game' });
-})
-
 router.put('/crazyEights/start_game', function(req,res){
   let result = {start: false};
   getGamePlayer(req,(err,game,player) => {
@@ -199,7 +194,7 @@ router.put('/crazyEights/grab_card/', (req, res) => {
         result.gotCard = 'deckIsEmpty';
         res.json(result)
       }else{
-        getCard(game,player);
+        result.card = getCard(game,player);
         result.gotCard = 'accept';
         res.json(result);
       }
@@ -396,6 +391,7 @@ function getCard(game, player){
     saveChanges(player);
     console.log(player.hand);
     console.log('Deck length', game.deck.length);
+    return card;
 
 }
 }

@@ -37,7 +37,7 @@ The application lets you play the Crazy-Eights card game, it uses the following 
 ###Web
 + Start game, que se despliegue la alerta siempre y no desaparezca al segundo startgame
 + Desplegar errores cuando ya se creo un nombre con ese mismo nombre o caracteres inválidos
-
++ Cliente web, modificar que se desplieguen solo 5 cartas por linea cuando se agregan cartas
 
 ## Authors
 
