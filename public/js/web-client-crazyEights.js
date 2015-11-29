@@ -14,6 +14,7 @@ $(document).ready(() =>{
 
   $('#btn_continue_create_game').click(continueCreateGame);
   $('#btn_continue_join_game').click(continueJoinGame);
+  $('#btn_continue_classification').click(setClassification);
   $('#new_btn').click(showNewModal);
   $('#start_btn').click(waitContrincants);
   $('#join_btn').click(showJoinModal);
@@ -56,6 +57,11 @@ function reset(){
         if (result.done){
           if (result.isEight){
             $('#classification_modal').modal();
+            setLastCard(card[0]+card[1]);
+            reset();
+            $('#play_game').toggleClass('hidden');
+            success();
+
 
           }else{
             setLastCard(card[0]+card[1]);
@@ -242,7 +248,7 @@ function waitContrincants(){
         }
       });
     }
-    return false; // Se requiere para evitar que la forma haga un "submit".
+    return false;
   }
 
   function continueJoinGame(){
@@ -262,6 +268,21 @@ function waitContrincants(){
       }
     });
 
+  }
+
+  function setClassification(){
+      var classification = $('#classification').val();
+      $("#classification_modal").modal('hide');
+      $.ajax({
+        url: '/crazyEights/put_classification/',
+        type: 'PUT',
+        dataType: 'json',
+        data: {classification: classification},
+        error: errorConexion,
+        success: result => {
+          alert('All good');
+        }
+      });
   }
 
     //----------------------------------------------------------------------------

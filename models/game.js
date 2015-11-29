@@ -16,7 +16,9 @@ var gameScheme = mongoose.Schema({
   playersInGame: {type: Number,
             default: 0, max: 5},
   turn: {type: Number,
-        default: 1, min: 1, max:5}
+        default: 1, min: 1, max:5},
+  eightClassification: {type: String,
+                        default:''}
 });
 
 

@@ -224,6 +224,16 @@ router.put('/crazyEights/pass_turn/', (req,res) => {
   });
 });
 
+router.put('/crazyEights/put_classification',(req,res) => {
+  let result = { done: false };
+  getGamePlayer(req, (err, game, player) => {
+    game.eightClassification = req.body.classification;
+    saveChanges(game);
+    result.done = true;
+    res.json(result);
+  });
+});
+
 router.put('/crazyEights/put_card/', (req,res) => {
 
   let result = { done: false, isEight:false};
@@ -231,7 +241,6 @@ router.put('/crazyEights/put_card/', (req,res) => {
 
     //--------------------------------------------------------------------------
     function saveChangesTurn(card) {
-      console.log(game.turn);
       let index = player.hand.indexOf(card);
       if (index > -1){
         player.hand.splice(index,1);
@@ -251,38 +260,42 @@ router.put('/crazyEights/put_card/', (req,res) => {
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
     function validCard(card) {
+          console.log(game.eightClassification);
 
-          if(card[0] === '8') return true;
-          else{
-          let stack = game.discardMaze[game.discardMaze.length-1].split('');
-          console.log(stack);
-            if(stack.length === 2){
-              if(card.length ===2){
-                if(stack[0] === card[0] ||stack[1] === card[1]) return true;
-                else return false;
-              }else{
-                if(stack[0] === card[0] ||stack[1] === card[2]) return true;
-                else return false;
-              }
-            }else if(stack.length ===3){
-              if(card.length ===2){
-                if(stack[0] === card[0] ||stack[2] === card[1]) return true;
-                else return false;
-              }else{
-                if(stack[0] === card[0] ||stack[2] === card[2]) return true;
-                else return false;
-              }
-            }else if(stack.length ===1){
-              if(card.length ===2){
-                if(stack[1] === card[0]) return true;
-                else return false;
-              }else{
-                if(stack[2] === card[0]) return true;
-                else return false;
-              }
+          if(game.eightClassification.length === 1){
+            if (card[1] === game.eightClassification){
+              game.eightClassification='';
+              saveChanges(game);
+              return true;
+            }else{
+              return false;
             }
-          return true;
-        }
+          }else{
+            if(card[0] === '8') return true;
+            else{
+            let stack = game.discardMaze[game.discardMaze.length-1].split('');
+            console.log(stack);
+              if(stack.length === 2){
+                if(card.length ===2){
+                  if(stack[0] === card[0] ||stack[1] === card[1]) return true;
+                  else return false;
+                }else{
+                  if(stack[0] === card[0] ||stack[1] === card[2]) return true;
+                  else return false;
+                }
+              }else if(stack.length ===3){
+                if(card.length ===2){
+                  if(stack[0] === card[0] ||stack[2] === card[1]) return true;
+                  else return false;
+                }else{
+                  if(stack[0] === card[0] ||stack[2] === card[2]) return true;
+                  else return false;
+                }
+              }
+            return true;
+          }
+          }
+
         }
     //--------------------------------------------------------------------------
 
