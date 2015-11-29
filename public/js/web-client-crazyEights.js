@@ -18,11 +18,15 @@ $(document).ready(() =>{
   $('#start_btn').click(waitContrincants);
   $('#join_btn').click(showJoinModal);
   $('#grab_card').click(grabCard);
-  $('.player-cards .new-cards').click(putCard);
+  $('.player-cards .new-card').click(putCard);
+  // $('#test').click(putCard);
+  // $('#test').on('click', putCard);
+  $(document).on('click', '#test', putCard);
+  // $('button').on('click', putCard);
 
   function putCard(){
-    console.log(this.className);
-    console.log(this.id);
+    alert(this.className);
+
   }
 
 
@@ -101,7 +105,10 @@ $(document).ready(() =>{
       var card = value+classification;
     }
     cardsDragged++;
-    var newCard = " <div class='btn card " + card + 'id="'+cardsDragged + '" ' + "'</div>'";
+
+    var newCard = '<button type="button" id="test" class="btn card ' + card + '"> </button>';
+    // var id = 'id="1" ';
+    // var newCard = " <div " + id + "class='btn card " + card + "'</div>'";
     $('.player-cards .new-cards').append(newCard);
     $('.player-cards').width($('.player-cards').width()+84);
   }
