@@ -24,7 +24,16 @@ $(document).ready(() =>{
   function putCard(){
 
     function success(){
-      //wins the game
+      $.ajax({
+        url: '/crazyEights/status/',
+        type: 'GET',
+        dataType: 'json',
+        error: errorConexion,
+        success: result => {
+          waitTurn();
+          //If end game
+        }
+      });
     }
 
     var card = this.className.split(' ');
@@ -42,8 +51,8 @@ $(document).ready(() =>{
       success: result => {
         if (result.done){
           setLastCard(card[0]+card[1]);
-          console.log(result);
-
+          $('#play_game').toggleClass('hidden');
+          success();
 
         }else{
           //Couldn't set any card
@@ -56,6 +65,7 @@ $(document).ready(() =>{
 
 
   function grabCard(){
+
     $.ajax({
       url: '/crazyEights/grab_card/',
       type: 'PUT',
@@ -64,9 +74,9 @@ $(document).ready(() =>{
       error: errorConexion,
       success: result => {
         if (result.gotCard === 'accept'){
-          //Get card
           console.log(result);
           getCard(result.card);
+
 
 
         }else if(result.gotCard === 'deckIsEmpty'){
@@ -129,13 +139,14 @@ $(document).ready(() =>{
       var classification = getClassification(splitCard[2]);
       var card = value+classification;
     }
-    cardsDragged++;
 
     var newCard = '<button type="button" id="test" class="btn card ' + card + '"> </button>';
     // var id = 'id="1" ';
     // var newCard = " <div " + id + "class='btn card " + card + "'</div>'";
     $('.player-cards .new-cards').append(newCard);
     $('.player-cards').width($('.player-cards').width()+84);
+
+
   }
 
   function setLastCard(card){
@@ -164,7 +175,6 @@ function waitContrincants(){
     error: errorConexion,
     success: result => {
       if (result.start){
-        setLastCard(result.lastCard);
         $('#start_game').hide();
         waitTurn();
       }else{
@@ -238,6 +248,7 @@ function waitContrincants(){
       error: errorConexion,
       success: result => {
         if (result.joined) {
+          $('#main_screen').hide();
           $("#join_modal").modal('hide');
           waitTurn();
         }
@@ -280,9 +291,9 @@ function waitTurn() {
         switch (result.status) {
 
         case 'your_turn':
-        console.log('my turn');
           $('#play_game').toggleClass('hidden');
           $('#play_title').html('It is your turn: ');
+          setLastCard(result.discardMaze[result.discardMaze.length-1]);
           play(result.playerHand);
           break;
 

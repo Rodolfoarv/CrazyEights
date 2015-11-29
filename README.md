@@ -40,6 +40,8 @@ The application lets you play the Crazy-Eights card game, it uses the following 
 + Desplegar errores cuando ya se creo un nombre con ese mismo nombre o caracteres inválidos
 + Cliente web, modificar que se desplieguen solo 5 cartas por linea cuando se agregan cartas
 + Crear la logica de poner una carta con sus correspondientes restricciones
++ Deshabilitar cualquier interacción cuando no es el turno de la persona una vez que el juego ya ha sido iniciado
+
 
 
 

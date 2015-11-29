@@ -240,6 +240,7 @@ router.put('/crazyEights/put_card/', (req,res) => {
         if (game.turn > game.playersInGame){
           game.turn = 1;
         }
+        console.log(game.turn);
         saveChanges(game);
         saveChanges(player);
         result.done = true;
@@ -280,6 +281,7 @@ router.put('/crazyEights/put_card/', (req,res) => {
       res.json(result);
 
     } else {
+      console.log('Put card, the turn game.turn =' + game.turn + 'player turn' + player.turn);
       if (game.turn === player.turn){
         if (req.body.choice.length < 2){
           let card = player.hand[req.body.choice].split('');
@@ -289,10 +291,13 @@ router.put('/crazyEights/put_card/', (req,res) => {
             res.json(result);
           }
         }else{
+          console.log('this is web client');
           let card = req.body.choice[0] + req.body.choice[1];
           if (validCard(card)){
+            console.log('card is valid');
             saveChangesTurn(card);
           }else{
+            console.log('card is not valid');
             res.json(result);
           }
         }
