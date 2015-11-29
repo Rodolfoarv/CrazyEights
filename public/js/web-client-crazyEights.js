@@ -3,7 +3,10 @@ const PAUSA = 1000;
 
 
 
+
 $(document).ready(() =>{
+
+  var cardsDragged = 0;
 
   //----------------------------------------------------------------------------
   $('#form_game_name').submit(continueCreateGame);
@@ -15,6 +18,13 @@ $(document).ready(() =>{
   $('#start_btn').click(waitContrincants);
   $('#join_btn').click(showJoinModal);
   $('#grab_card').click(grabCard);
+  $('.player-cards .new-cards').click(putCard);
+
+  function putCard(){
+    console.log(this.className);
+    console.log(this.id);
+  }
+
 
   function grabCard(){
     $.ajax({
@@ -90,9 +100,24 @@ $(document).ready(() =>{
       var classification = getClassification(splitCard[2]);
       var card = value+classification;
     }
-    var newCard = "<div class='btn card " + card + "'</div>'";
+    cardsDragged++;
+    var newCard = " <div class='btn card " + card + 'id="'+cardsDragged + '" ' + "'</div>'";
     $('.player-cards .new-cards').append(newCard);
     $('.player-cards').width($('.player-cards').width()+84);
+  }
+
+  function setLastCard(card){
+    var splitCard = card.split('');
+    if (splitCard.length === 2){
+      var value = getNumber(splitCard[0]);
+      var classification = getClassification(splitCard[1]);
+      var card = value+classification;
+    }else{
+      var value = 'ten';
+      var classification = getClassification(splitCard[2]);
+      var card = value+classification;
+    }
+    $('#last_card').attr('class', 'card ' + card);
   }
 
 
@@ -105,8 +130,9 @@ function waitContrincants(){
     data: {},
     error: errorConexion,
     success: result => {
-      console.log(result);
       if (result.start){
+        console.log(result.lastCard);
+        setLastCard(result.lastCard);
         $('#start_game').hide();
         waitTurn();
       }else{
@@ -143,6 +169,7 @@ function waitContrincants(){
                 $('#main_screen').hide();
                 $("#new_modal").modal('hide');
                 $('#start_game').toggleClass('hidden');
+
           } else {
             switch (result.code) {
 

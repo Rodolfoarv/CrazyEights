@@ -104,6 +104,7 @@ router.put('/crazyEights/start_game', function(req,res){
           game.started = true;
           result.start = true;
           game.discardMaze.push(topCard);
+          result.lastCard = game.discardMaze[0];
           saveChanges(game);
 
         }
