@@ -226,7 +226,7 @@ router.put('/crazyEights/pass_turn/', (req,res) => {
 
 router.put('/crazyEights/put_card/', (req,res) => {
 
-  let result = { done: false };
+  let result = { done: false, isEight:false};
   getGamePlayer(req, (err, game, player) => {
 
     //--------------------------------------------------------------------------
@@ -249,31 +249,41 @@ router.put('/crazyEights/put_card/', (req,res) => {
   }
 
     // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
     function validCard(card) {
-      let stack = game.discardMaze[0].split('');
-        if(stack.length === 2){
-          if(card.length ===2){
-            if(stack[0] === card[0] ||stack[1] === card[1])
-              return true;
-          }else{
-            if(stack[0] === card[0] ||stack[1] === card[2])
-              return true;
-          }
-        }else if(stack.length ===3){
-          if(card.length ===2){
-            if(stack[0] === card[0] ||stack[2] === card[1])
-              return true;
-          }else{
-            if(stack[0] === card[0] ||stack[2] === card[2])
-              return true;
-            else{
 
+          if(card[0] === '8') return true;
+          else{
+          let stack = game.discardMaze[game.discardMaze.length-1].split('');
+          console.log(stack);
+            if(stack.length === 2){
+              if(card.length ===2){
+                if(stack[0] === card[0] ||stack[1] === card[1]) return true;
+                else return false;
+              }else{
+                if(stack[0] === card[0] ||stack[1] === card[2]) return true;
+                else return false;
+              }
+            }else if(stack.length ===3){
+              if(card.length ===2){
+                if(stack[0] === card[0] ||stack[2] === card[1]) return true;
+                else return false;
+              }else{
+                if(stack[0] === card[0] ||stack[2] === card[2]) return true;
+                else return false;
+              }
+            }else if(stack.length ===1){
+              if(card.length ===2){
+                if(stack[1] === card[0]) return true;
+                else return false;
+              }else{
+                if(stack[2] === card[0]) return true;
+                else return false;
+              }
             }
-
-          }
+          return true;
         }
-
-    }
+        }
     //--------------------------------------------------------------------------
 
     if (err) {
@@ -293,6 +303,11 @@ router.put('/crazyEights/put_card/', (req,res) => {
         }else{
           console.log('this is web client');
           let card = req.body.choice[0] + req.body.choice[1];
+          if (req.body.choice[0] == 8){
+            console.log('its an eight');
+            result.isEight = true;
+            saveChangesTurn(card);
+          }
           if (validCard(card)){
             console.log('card is valid');
             saveChangesTurn(card);

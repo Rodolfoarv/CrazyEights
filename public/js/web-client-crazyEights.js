@@ -18,8 +18,12 @@ $(document).ready(() =>{
   $('#start_btn').click(waitContrincants);
   $('#join_btn').click(showJoinModal);
   $('#grab_card').click(grabCard);
-  $('.player-cards .new-card').click(putCard);
   $(document).on('click', '#test', putCard);
+
+function reset(){
+  	$(".player-cards").html("<h2> Your hand </h2> <div class='new-cards'></div>");
+    $(".player-cards").css("width","");
+}
 
   function putCard(){
 
@@ -50,10 +54,15 @@ $(document).ready(() =>{
       error: errorConexion,
       success: result => {
         if (result.done){
-          setLastCard(card[0]+card[1]);
-          $('#play_game').toggleClass('hidden');
-          success();
+          if (result.isEight){
+            $('#classification_modal').modal();
 
+          }else{
+            setLastCard(card[0]+card[1]);
+            reset();
+            $('#play_game').toggleClass('hidden');
+            success();
+          }
         }else{
           //Couldn't set any card
         }
@@ -121,14 +130,12 @@ $(document).ready(() =>{
   }
 
   function play(hand){
-    console.log(hand);
     for (var i = 0; i < hand.length; i++) {
       getCard(hand[i]);
     }
-
   }
 
-  function getCard(card){
+    function getCard(card){
     var splitCard = card.split('');
     if (splitCard.length === 2){
       var value = getNumber(splitCard[0]);
@@ -295,6 +302,7 @@ function waitTurn() {
           $('#play_title').html('It is your turn: ');
           setLastCard(result.discardMaze[result.discardMaze.length-1]);
           play(result.playerHand);
+
           break;
 
         case 'wait':
