@@ -51,6 +51,8 @@ $(document).ready(() =>{
       success: result => {
         if (result.done){
           setLastCard(card[0]+card[1]);
+          $('.player-cards .new-cards').empty();
+          $('.player-cards').width($('.player-cards').width(0));
           $('#play_game').toggleClass('hidden');
           success();
 
