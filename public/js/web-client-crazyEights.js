@@ -41,8 +41,7 @@ $(document).ready(() =>{
       error: errorConexion,
       success: result => {
         if (result.done){
-          //Put a card
-          alert('purfect');
+          setLastCard(card[0]+card[1]);
           console.log(result);
 
 
@@ -150,6 +149,7 @@ $(document).ready(() =>{
       var classification = getClassification(splitCard[2]);
       var card = value+classification;
     }
+    // console.log($('#last_card').atrr('class'));
     $('#last_card').attr('class', 'card ' + card);
   }
 
@@ -164,7 +164,6 @@ function waitContrincants(){
     error: errorConexion,
     success: result => {
       if (result.start){
-        console.log(result.lastCard);
         setLastCard(result.lastCard);
         $('#start_game').hide();
         waitTurn();
