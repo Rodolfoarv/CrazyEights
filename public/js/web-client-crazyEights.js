@@ -271,6 +271,20 @@ function waitContrincants(){
   }
 
   function setClassification(){
+
+    function successResult(){
+      $.ajax({
+        url: '/crazyEights/status/',
+        type: 'GET',
+        dataType: 'json',
+        error: errorConexion,
+        success: result => {
+          waitTurn();
+          //If end game
+        }
+      });
+    }
+
       var classification = $('#classification').val();
       $("#classification_modal").modal('hide');
       $.ajax({
@@ -280,7 +294,7 @@ function waitContrincants(){
         data: {classification: classification},
         error: errorConexion,
         success: result => {
-          alert('All good');
+          successResult();
         }
       });
   }
@@ -322,6 +336,11 @@ function waitTurn() {
           $('#play_game').toggleClass('hidden');
           $('#play_title').html('It is your turn: ');
           setLastCard(result.discardMaze[result.discardMaze.length-1]);
+          console.log('got everything correct');
+          console.log(result.eightClassification);
+          if(result.eightClassification.length === 1){
+            console.log('gotta update the image!');
+          }
           play(result.playerHand);
 
           break;

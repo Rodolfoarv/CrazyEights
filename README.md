@@ -32,7 +32,6 @@ The application lets you play the Crazy-Eights card game, it uses the following 
 + Método que termina el juego cuando algun jugador se queda sin cartas
 + Modificar en la validación que el 8 sea un caso especial que siempre aplique y que el usuario escoga la denominación
 + Mejorar la interface que despliegue errores dependiendo de la acción y que sean responsivos e.g cuando quiere agregar una carta incorrecta
-+ Modificar que solo pueda agregar 3 cartas en un Pick
 + Terminar que valide un 8 y eliga la denominación el usuario
 
 ###Web Client
@@ -40,6 +39,9 @@ The application lets you play the Crazy-Eights card game, it uses the following 
 + Desplegar errores cuando ya se creo un nombre con ese mismo nombre o caracteres inválidos
 + Cliente web, modificar que se desplieguen solo 5 cartas por linea cuando se agregan cartas
 + Deshabilitar cualquier interacción cuando no es el turno de la persona una vez que el juego ya ha sido iniciado
++ Terminar la lógica de pasar de turno cuando ya no quedan cartas
++ Añadir una imagen en el contricante cuando el usuario elige un 8 especificando el palo que eligió
++ Añadir método para terminar el juego es decir ganar o perder
 
 
 

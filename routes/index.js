@@ -155,6 +155,7 @@ router.get('/crazyEights/status/', (req,res) => {
         res.json(result);
       }else if(game.turn === player.turn){
         result.status = 'your_turn';
+        result.eightClassification = game.eightClassification;
         result.playerHand = player.hand;
         result.discardMaze = game.discardMaze;
         res.json(result);
@@ -317,7 +318,6 @@ router.put('/crazyEights/put_card/', (req,res) => {
           console.log('this is web client');
           let card = req.body.choice[0] + req.body.choice[1];
           if (req.body.choice[0] == 8){
-            console.log('its an eight');
             result.isEight = true;
             saveChangesTurn(card);
           }
