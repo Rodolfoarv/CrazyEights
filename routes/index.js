@@ -281,12 +281,22 @@ router.put('/crazyEights/put_card/', (req,res) => {
 
     } else {
       if (game.turn === player.turn){
-        let card = player.hand[req.body.choice].split('');
-        if (validCard(card)){
-          saveChangesTurn(player.hand[req.body.choice]);
+        if (req.body.choice.length < 2){
+          let card = player.hand[req.body.choice].split('');
+          if (validCard(card)){
+            saveChangesTurn(player.hand[req.body.choice]);
+          }else{
+            res.json(result);
+          }
         }else{
-          res.json(result);
+          let card = req.body.choice[0] + req.body.choice[1];
+          if (validCard(card)){
+            saveChangesTurn(card);
+          }else{
+            res.json(result);
+          }
         }
+
       }else{
         res.json(result);
       }

@@ -19,13 +19,39 @@ $(document).ready(() =>{
   $('#join_btn').click(showJoinModal);
   $('#grab_card').click(grabCard);
   $('.player-cards .new-card').click(putCard);
-  // $('#test').click(putCard);
-  // $('#test').on('click', putCard);
   $(document).on('click', '#test', putCard);
-  // $('button').on('click', putCard);
 
   function putCard(){
-    alert(this.className);
+
+    function success(){
+      //wins the game
+    }
+
+    var card = this.className.split(' ');
+    var splitCard = card[2].split('-');
+    var number = getClassNumber(splitCard[0]);
+    var classification = getClassClassification(splitCard[2]);
+    var card = number+classification + ' web';
+
+    $.ajax({
+      url: '/crazyEights/put_card/',
+      type: 'PUT',
+      dataType: 'json',
+      data: {choice: card},
+      error: errorConexion,
+      success: result => {
+        if (result.done){
+          //Put a card
+          alert('purfect');
+          console.log(result);
+
+
+        }else{
+          //Couldn't set any card
+        }
+      }
+    });
+
 
   }
 
@@ -323,6 +349,48 @@ function getNumber(num){
     return 'queen';
   }else if(num === 'K'){
     return 'king';
+  }
+}
+
+function getClassClassification(classificationString){
+  if(classificationString === 'diamonds'){
+    return '♠';
+  }else if(classificationString === 'hearts'){
+    return '♥'
+  }else if(classificationString === 'spades'){
+    return '♦'
+  }else{ //♣
+    return '♣';
+  }
+}
+
+function getClassNumber(num){
+  if(num === 'ace'){
+    return 'A';
+  }else if(num == 'two'){
+    return '2';
+  }else if(num == 'three'){
+    return '3';
+  }else if(num == 'four'){
+    return '4';
+  }else if(num == 'five'){
+    return '5';
+  }else if(num == 'six'){
+    return '6';
+  }else if(num == 'seven'){
+    return '7';
+  }else if(num == 'eight'){
+    return '8';
+  }else if(num == 'nine'){
+    return '9';
+  }else if(num == 'ten'){
+    return '10';
+  }else if(num === 'jack'){
+    return 'J';
+  }else if(num === 'queen'){
+    return 'Q';
+  }else if(num === 'king'){
+    return 'K';
   }
 }
 
