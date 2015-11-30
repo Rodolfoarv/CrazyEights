@@ -153,7 +153,7 @@ function reset(){
       var card = value+classification;
     }
 
-    var newCard = '<button type="button" id="test" class="btn card ' + card + '"> </button>';
+    var newCard = '<div class="cube"><button type="button" id="test" class="btn card ' + card + '"> </button></div>';
     // var id = 'id="1" ';
     // var newCard = " <div " + id + "class='btn card " + card + "'</div>'";
     $('.player-cards .new-cards').append(newCard);
