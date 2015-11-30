@@ -38,9 +38,6 @@ The application lets you play the Crazy-Eights card game, it uses the following 
 + Start game, que se despliegue la alerta siempre y no desaparezca al segundo startgame
 + Desplegar errores cuando ya se creo un nombre con ese mismo nombre o caracteres inválidos
 + Cliente web, modificar que se desplieguen solo 5 cartas por linea cuando se agregan cartas
-+ Deshabilitar cualquier interacción cuando no es el turno de la persona una vez que el juego ya ha sido iniciado
-+ Terminar la lógica de pasar de turno cuando ya no quedan cartas
-+ Añadir una imagen en el contricante cuando el usuario elige un 8 especificando el palo que eligió
 + Añadir método para terminar el juego es decir ganar o perder
 
 
