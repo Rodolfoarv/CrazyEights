@@ -215,7 +215,7 @@ router.put('/crazyEights/grab_card/', (req, res) => {
 router.put('/crazyEights/pass_turn/', (req,res) => {
   let result = { done: false };
   getGamePlayer(req, (err, game, player) => {
-    
+
     function saveChangesTurn(){
       game.turn++;
       if (game.turn > game.playersInGame) {
@@ -257,8 +257,8 @@ router.put('/crazyEights/put_classification',(req,res) => {
         result.classification = game.eightClassification;
         game.discardMaze.push('8'+game.eightClassification);
         saveChanges(game);
-        result.done = true;     
-        res.json(result); 
+        result.done = true;
+        res.json(result);
   });
 });
 
@@ -334,7 +334,7 @@ router.put('/crazyEights/put_card/', (req,res) => {
     } else {
       console.log('Put card, the turn game.turn =' + game.turn + 'player turn' + player.turn);
       if (game.turn === player.turn){
-        if (req.body.choice.length < 2){
+        if (req.body.choice.length < 3){
           let card = player.hand[req.body.choice].split('');
           if (validCard(card)){
             saveChangesTurn(player.hand[req.body.choice]);
@@ -342,21 +342,19 @@ router.put('/crazyEights/put_card/', (req,res) => {
             res.json(result);
           }
         }else{
-          console.log('this is web client');
-          let card = req.body.choice[0] + req.body.choice[1];
+          let card;
+          if(req.body.choice.length == 6)
+            card = req.body.choice[0] + req.body.choice[1];
+          else if(req.body.choice.length == 7) {
+            card = req.body.choice[0] + req.body.choice[1]+req.body.choice[2];
+          }
+
           if (req.body.choice[0] == 8){
-            let index = player.hand.indexOf(card);
-            if (index > -1){
-              player.hand.splice(index,1);
-            }
-            result.isEight = true
-            saveChanges(player);
-            result.done = true;
-            res.json(result);
-            return;
+            result.isEight = true;
+            saveChangesTurn(card);
           }
           if (validCard(card)){
-            console.log('card is valid');
+            console.log('card is valid  ' + card);
             saveChangesTurn(card);
           }else{
             console.log('card is not valid');
