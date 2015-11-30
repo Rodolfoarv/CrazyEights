@@ -20,12 +20,44 @@ $(document).ready(() =>{
   $('#join_btn').click(showJoinModal);
   $('#grab_card').click(grabCard);
   $(document).on('click', '#test', putCard);
+  $('#btn_pass').click(pass);
 
 function reset(){
   	$(".player-cards").html("<h2> Your hand </h2> <div class='new-cards'></div>");
     $(".player-cards").css("width","");
 }
 
+  function pass(){
+    
+    function success(){
+      $.ajax({
+        url: '/crazyEights/status/',
+        type: 'GET',
+        dataType: 'json',
+        error: errorConexion,
+        success: result => {
+          waitTurn();
+          //If end game  
+        }
+      });
+    }
+    $.ajax({
+      url: '/crazyEights/pass_turn/',
+      type: 'PUT',
+        dataType: 'json',
+        error: errorConexion,
+        success: result => {
+          if (!result.done){         
+          $('#play_game').toggleClass('hidden');
+          $('.player-cards .new-cards').empty();
+          $('.player-cards').width($('.player-cards').width(0));
+          success();
+        }else{       
+        }
+        }
+    });
+  }
+  
   function putCard(){
 
     function success(){
