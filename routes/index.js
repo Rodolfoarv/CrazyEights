@@ -158,8 +158,10 @@ router.get('/crazyEights/status/', (req,res) => {
         result.eightClassification = game.eightClassification;
         result.playerHand = player.hand;
         result.discardMaze = game.discardMaze;
+        result.drawTimes = player.drawTimes;
         res.json(result);
       }else{
+        player.drawTimes = 0;
         result.status = 'wait';
         console.log('result status', result);
         res.json(result);
@@ -195,9 +197,13 @@ router.put('/crazyEights/grab_card/', (req, res) => {
       if (game.deck.length === 1){
         result.gotCard = 'deckIsEmpty';
         res.json(result)
-      }else{
+      }else if (player.drawTimes === 3) {
+        result.gotCard = 'reject';
+        res.json(result);
+      } else{
         result.card = getCard(game,player);
         result.gotCard = 'accept';
+        player.drawTimes++;
         res.json(result);
       }
 
@@ -209,6 +215,19 @@ router.put('/crazyEights/grab_card/', (req, res) => {
 router.put('/crazyEights/pass_turn/', (req,res) => {
   let result = { done: false };
   getGamePlayer(req, (err, game, player) => {
+    
+    function saveChangesTurn(){
+      game.turn++;
+      if (game.turn > game.playersInGame) {
+        game.turn = 1;
+      }
+        console.log(game.turn);
+        saveChanges(game);
+        saveChanges(player);
+        result.done = true;
+        player.drawTimes = 0;
+        res.json(result);
+    }
     if (game.deck.length === 1){
       game.turn++;
       if (game.turn > game.playersInGame){
@@ -218,20 +237,28 @@ router.put('/crazyEights/pass_turn/', (req,res) => {
       result.done = true;
       res.json(result);
     }else{
-      res.json(result);
+      saveChangesTurn();
     }
-
-
   });
 });
 
 router.put('/crazyEights/put_classification',(req,res) => {
   let result = { done: false };
-  getGamePlayer(req, (err, game, player) => {
+    getGamePlayer(req, (err, game, player) => {
     game.eightClassification = req.body.classification;
-    saveChanges(game);
-    result.done = true;
-    res.json(result);
+    game.turn++;
+    player.drawTimes = 0;
+    if (game.turn > game.playersInGame){
+          game.turn = 1;
+        }
+        console.log(game.turn);
+        saveChanges(game);
+        saveChanges(player);
+        result.classification = game.eightClassification;
+        game.discardMaze.push('8'+game.eightClassification);
+        saveChanges(game);
+        result.done = true;     
+        res.json(result); 
   });
 });
 
@@ -247,6 +274,7 @@ router.put('/crazyEights/put_card/', (req,res) => {
         player.hand.splice(index,1);
         game.discardMaze.push(card);
         game.turn++;
+        player.drawTimes = 0;
         if (game.turn > game.playersInGame){
           game.turn = 1;
         }
@@ -258,7 +286,6 @@ router.put('/crazyEights/put_card/', (req,res) => {
     }
   }
 
-    // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
     function validCard(card) {
           console.log(game.eightClassification);
@@ -318,8 +345,15 @@ router.put('/crazyEights/put_card/', (req,res) => {
           console.log('this is web client');
           let card = req.body.choice[0] + req.body.choice[1];
           if (req.body.choice[0] == 8){
-            result.isEight = true;
-            saveChangesTurn(card);
+            let index = player.hand.indexOf(card);
+            if (index > -1){
+              player.hand.splice(index,1);
+            }
+            result.isEight = true
+            saveChanges(player);
+            result.done = true;
+            res.json(result);
+            return;
           }
           if (validCard(card)){
             console.log('card is valid');
@@ -329,13 +363,10 @@ router.put('/crazyEights/put_card/', (req,res) => {
             res.json(result);
           }
         }
-
       }else{
         res.json(result);
       }
       }
-
-
   });
 });
 
