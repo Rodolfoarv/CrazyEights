@@ -340,7 +340,6 @@ function setClassification(){
     });
 }
 function unirJuego() {
-
   //----------------------------------------------------------------------------
   function verificarUnion(result) {
     if (result.joined) {
@@ -448,7 +447,6 @@ function selectAvailableGames(games, callback) {
 }
 
 function selectAvailableCards(cards, callback) {
-
   let total = cards.length + 1;
   console.log(total);
   printLn();

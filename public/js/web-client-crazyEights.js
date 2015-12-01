@@ -264,6 +264,15 @@ function waitContrincants(){
 
             case 'duplicated':
               alert('Someone else has created a game with this name');
+              $.ajax({
+                url: '/',
+                type: 'GET',
+                dataType: 'json',
+                data: {},
+                error: errorConexion,
+                success: result => {
+                }
+              });
               break;
 
             case 'invalid':
