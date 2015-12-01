@@ -336,6 +336,17 @@ router.put('/crazyEights/put_card/', (req,res) => {
       if (game.turn === player.turn){
         if (req.body.choice.length < 2){
           let card = player.hand[req.body.choice].split('');
+          if (card[0] == 8){
+            let index = player.hand.indexOf(card);
+            if (index > -1){
+              player.hand.splice(index,1);
+            }
+            result.isEight = true
+            saveChanges(player);
+            result.done = true;
+            res.json(result);
+            return;
+          }
           if (validCard(card)){
             saveChangesTurn(player.hand[req.body.choice]);
           }else{

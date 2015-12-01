@@ -114,7 +114,6 @@ function createGame() {
           if (result.created) {
             //Displays a menu that will let the host starts the game or until it is full
             waitContrincants();
-            play(result.simbolo);
             return;
 
           } else if (result.code === 'duplicated') {
@@ -187,31 +186,6 @@ function printLn(mens) {
 
 
 //------------------------------------------------------------------------------
-function juegoTerminado(estado) {
-
-  function mens(s) {
-    printLn();
-    printLn(s);
-    return true;
-  }
-
-  switch (estado) {
-
-  case 'empate':
-    return mens('Empate.');
-
-  case 'ganaste':
-    return mens('Ganaste. ¡Felicidades!');
-
-  case 'perdiste':
-    return mens('Perdiste. ¡Lástima!');
-
-  default:
-    return false;
-  }
-}
-
-//------------------------------------------------------------------------------
 function play() {
   esperarTurno(result => {
 
@@ -271,6 +245,9 @@ function play() {
             {},
             result => {
               if (result.gotCard === 'accept'){
+                printLn('\n\n<==============<<<=>>>=================>');
+                console.log('You got the card: ', result.card);
+                printLn('<==============<<<=>>>=================>');
                 getCard(result);
               }else if (result.gotCard === 'deckIsEmpty'){
                 printLn('You must choose a card from your hand or pass');
@@ -292,12 +269,17 @@ function play() {
                 '/crazyEights/put_card',
                 {choice: choice},
                 result => {
-                  if (result.done){
-                    putCard();
+                  if (result.isEight){
+                    setClassification();
                   }else{
-                    printLn('ERROR: Could not set any card.');
-                    play();
+                    if (result.done){
+                      putCard();
+                    }else{
+                      printLn('ERROR: Could not set any card.');
+                      play();
+                    }
                   }
+
                 }
               );
             }
@@ -322,6 +304,40 @@ function play() {
       });
     }
   });
+}
+
+function setClassification(){
+
+    selectClassificationOptions( option => {
+      if (option === -1) {
+        menu();
+      } else {
+        let classification;
+        if (option === 1){
+          classification = '♠';
+        }else if(option === 2){
+          classification = '♥';
+        }else if(option === 3){
+          classification = '♦';
+        }else{
+          classification = '♣';
+        }
+        webService.invocar(
+          'PUT',
+          '/crazyEights/put_classification/',
+          {classification: classification},
+          result => {
+            webService.invocar(
+              'GET',
+              '/crazyEights/status/',
+              {},
+              result => {
+                play();
+              });
+          }
+        );
+      }
+    });
 }
 function unirJuego() {
 
@@ -434,13 +450,13 @@ function selectAvailableGames(games, callback) {
 function selectAvailableCards(cards, callback) {
 
   let total = cards.length + 1;
-
+  console.log(total);
   printLn();
   printLn('Which card do you wish to put on the stack?');
   for (let i = 1; i < total; i++) {
     printLn('    (' + i + ') «' + cards[i - 1] + '»');
   }
-  printLn('    (' + total + ') Regresar al menú principal');
+  printLn('    (' + total + ') Return to the main menu');
   readOption(1, total, opcion => callback(opcion === total ? -1 : opcion - 1));
 }
 
@@ -451,6 +467,16 @@ function selectPlayOptions(callback){
   printLn('(3) Pass turn');
   printLn('<==============<<<=>>>=================>');
   readOption(1,3,option => callback(option === 4 ? -1 : option));
+}
+
+function selectClassificationOptions(callback){
+  printLn('Select a classification');
+  printLn('(1) ♠');
+  printLn('(2) ♥');
+  printLn('(3) ♦');
+  printLn('(3) ♣');
+  printLn('<==============<<<=>>>=================>');
+  readOption(1,4,option => callback(option === 5 ? -1 : option));
 }
 
 function selectHostOptions(callback){
@@ -477,7 +503,7 @@ function endGame(status){
     case 'win':
       return mens('Congratulations! You have won');
 
-    case 'perdiste':
+    case 'lose':
       return mens('You have lost! Please try again!');
     default:
       return false;
