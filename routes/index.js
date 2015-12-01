@@ -215,7 +215,7 @@ router.put('/crazyEights/grab_card/', (req, res) => {
 router.put('/crazyEights/pass_turn/', (req,res) => {
   let result = { done: false };
   getGamePlayer(req, (err, game, player) => {
-    
+
     function saveChangesTurn(){
       game.turn++;
       if (game.turn > game.playersInGame) {
@@ -257,8 +257,8 @@ router.put('/crazyEights/put_classification',(req,res) => {
         result.classification = game.eightClassification;
         game.discardMaze.push('8'+game.eightClassification);
         saveChanges(game);
-        result.done = true;     
-        res.json(result); 
+        result.done = true;
+        res.json(result);
   });
 });
 
@@ -342,8 +342,13 @@ router.put('/crazyEights/put_card/', (req,res) => {
             res.json(result);
           }
         }else{
-          console.log('this is web client');
-          let card = req.body.choice[0] + req.body.choice[1];
+          let card;
+          if (req.body.choice.length === 7){
+            card = req.body.choice[0] + req.body.choice[1] + req.body.choice[2];
+            console.log(card);
+          }else{
+            card = req.body.choice[0] + req.body.choice[1];
+          }
           if (req.body.choice[0] == 8){
             let index = player.hand.indexOf(card);
             if (index > -1){

@@ -264,13 +264,10 @@ function waitContrincants(){
 
             case 'duplicated':
               alert('Someone else has created a game with this name');
-              // text = 'Alguien más ya creó un juego con este ' +
-              //   'name: <em>' + escaparHtml(name) + '</em>';
               break;
 
             case 'invalid':
               alert('Invalid name');
-              // text = 'No se proporcionó un name de juego válido.';
               break;
 
             default:
