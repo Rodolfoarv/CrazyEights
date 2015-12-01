@@ -28,7 +28,7 @@ function reset(){
 }
 
 function pass(){
-    
+
     function success(){
       $.ajax({
         url: '/crazyEights/status/',
@@ -37,7 +37,7 @@ function pass(){
         error: errorConexion,
         success: result => {
           waitTurn();
-          //If end game  
+          //If end game
         }
       });
     }
@@ -47,12 +47,12 @@ function pass(){
         dataType: 'json',
         error: errorConexion,
         success: result => {
-          if (result.done){         
+          if (result.done){
           $('#play_game').toggleClass('hidden');
           $('.player-cards .new-cards').empty();
           $('.player-cards').width($('.player-cards').width(0));
           success();
-        }else{       
+        }else{
         }
         }
     });
@@ -189,7 +189,7 @@ function pass(){
     // var id = 'id="1" ';
     // var newCard = " <div " + id + "class='btn card " + card + "'</div>'";
     $('.player-cards .new-cards').append(newCard);
-    $('.player-cards').width($('.player-cards').width()+84);
+    $('.player-cards').width($('.player-cards').width()+25);
 
 
   }
