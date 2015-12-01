@@ -56,7 +56,7 @@ router.post('/crazyEights/createGame/', (req,res) => {
         turn: game.playersInGame,
         hand: []
       });
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 1; i++) {
         getCard(game,player);
       }
 
@@ -144,14 +144,17 @@ router.get('/crazyEights/status/', (req,res) => {
       res.json(result);
 
     }else{
-      console.log(player.hand.length);
       if (!game.started){
-        console.log('Slots open: ', game.slotsOpen);
-        console.log('Player turn: ', player.turn);
         result.status = 'wait';
         res.json(result);
+      }else if(game.winner){
+        result.status = 'lose';
+        res.json(result);
       }else if(player.hand.length === 0){
+        console.log('really got here');
+        game.winner = true;
         result.status = 'win';
+        saveChanges(game);
         res.json(result);
       }else if(game.turn === player.turn){
         result.status = 'your_turn';
@@ -477,11 +480,8 @@ function getCard(game, player){
   let index = game.deck.indexOf(card);
   if (index > -1){
     game.deck.splice(index,1);
-    console.log('Grabbed the card', card);
     saveChanges(game);
     saveChanges(player);
-    console.log(player.hand);
-    console.log('Deck length', game.deck.length);
     return card;
 
 }

@@ -114,10 +114,11 @@ function pass(){
     switch(status){
 
       case 'win':
-        alert('You have won the game');
-
+        $('#wait_title').html('You have won the game');
+        return alert('You have won the game');
       case 'lose':
-        alert('You have lost the game');
+        $('#wait_title').html('You have lost the game');
+        return alert('You have lost the game');
       default:
         return false;
       }
@@ -251,11 +252,9 @@ function waitContrincants(){
   //----------------------------------------------------------------------------
   function continueCreateGame() {
     var name = $('#game_name').val().trim();
-
     if (name === '') {
       mensajeError('The game name cannot be empty');
     } else {
-      console.log('got here');
       $.ajax({
         url: '/crazyEights/createGame/',
         type: 'POST',

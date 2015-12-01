@@ -18,7 +18,9 @@ var gameScheme = mongoose.Schema({
   turn: {type: Number,
         default: 1, min: 1, max:5},
   eightClassification: {type: String,
-                        default:''}
+                        default:''},
+  winner: {type: Boolean,
+          default: false}
 });
 
 
