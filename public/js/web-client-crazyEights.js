@@ -131,6 +131,7 @@ function pass(){
         }else{
           //Error, no card
           $('#start_alert').toggleClass('hidden');
+
         }
       }
     });
@@ -221,6 +222,7 @@ function waitContrincants(){
     success: result => {
       if (result.start){
         $('#start_game').hide();
+        $('#wait').toggleClass('hidden');
         waitTurn();
       }else{
         //Error, cannot start the game
@@ -366,6 +368,7 @@ function waitTurn() {
         switch (result.status) {
 
         case 'your_turn':
+          $('#wait').toggleClass('hidden');
           $('#play_game').toggleClass('hidden');
           $('#play_title').html('It is your turn: ');
           setLastCard(result.discardMaze[result.discardMaze.length-1]);
@@ -379,6 +382,8 @@ function waitTurn() {
           break;
 
         case 'wait':
+          $('#wait').toggleClass('hidden');
+          $('#wait_title').html('Please wait, it is not your turn yet ');
           console.log(seconds);
           setTimeout(ticToc, PAUSA);
           break;
