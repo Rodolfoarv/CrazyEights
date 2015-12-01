@@ -129,8 +129,8 @@ router.get('/crazyEights/status/', (req,res) => {
         return find({ player: player._id});
       })
       .then(arg => {
-        let playeres = arg;
-        if (jugadores.length === 0) {
+        let players = arg;
+        if (players.length === 0) {
           let remove = promisify(game.remove.bind(game));
           return remove();
         }
@@ -144,6 +144,7 @@ router.get('/crazyEights/status/', (req,res) => {
       res.json(result);
 
     }else{
+      console.log(player.hand.length);
       if (!game.started){
         console.log('Slots open: ', game.slotsOpen);
         console.log('Player turn: ', player.turn);
@@ -151,7 +152,6 @@ router.get('/crazyEights/status/', (req,res) => {
         res.json(result);
       }else if(player.hand.length === 0){
         result.status = 'win';
-        deleteGamePlayers();
         res.json(result);
       }else if(game.turn === player.turn){
         result.status = 'your_turn';
@@ -334,7 +334,7 @@ router.put('/crazyEights/put_card/', (req,res) => {
     } else {
       console.log('Put card, the turn game.turn =' + game.turn + 'player turn' + player.turn);
       if (game.turn === player.turn){
-        if (req.body.choice.length < 2){
+        if (req.body.choice.length < 4){
           let card = player.hand[req.body.choice].split('');
           if (card[0] == 8){
             let index = player.hand.indexOf(card);

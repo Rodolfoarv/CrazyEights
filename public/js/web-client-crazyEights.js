@@ -67,6 +67,7 @@ function pass(){
         dataType: 'json',
         error: errorConexion,
         success: result => {
+          endGame(result.status);
           waitTurn();
           //If end game
         }
@@ -90,10 +91,6 @@ function pass(){
           if (result.isEight){
             $('#classification_modal').modal();
             reset();
-            /*setLastCard(card[0]+card[1]);
-            $('#play_game').toggleClass('hidden');
-            success();*/
-
 
           }else{
             setLastCard(card[0]+card[1]);
@@ -105,10 +102,26 @@ function pass(){
           //Couldn't set any card
         }
       }
+
     });
 
 
+
   }
+
+  function endGame(status){
+
+    switch(status){
+
+      case 'win':
+        alert('You have won the game');
+
+      case 'lose':
+        alert('You have lost the game');
+      default:
+        return false;
+      }
+    }
 
 
   function grabCard(){
