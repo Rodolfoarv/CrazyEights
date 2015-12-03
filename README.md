@@ -26,17 +26,7 @@ The application lets you play the Crazy-Eights card game, it uses the following 
     You can access the text-client using the following command npm run-script client
 
 ## TODO
-
-###Text Client
-+ Método que termina el juego cuando algun jugador se queda sin cartas
-
-###Web Client
-+ Cliente web, modificar que se desplieguen solo 5 cartas por linea cuando se agregan cartas
-+ Añadir método para terminar el juego es decir ganar o perder
-+ Agregar bootstrap (Luis)
-
-
-
+There is nothing left to do, good job everyone.
 
 ## Authors
 

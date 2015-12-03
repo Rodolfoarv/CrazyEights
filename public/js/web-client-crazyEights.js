@@ -20,11 +20,16 @@ $(document).ready(() =>{
   $(document).on('click', '#test', putCard);
   $('#btn_pass').click(pass);
 
+//----------------------------------------------------------------------------
+//Function that reset the interface of the user that has put a card
 function reset(){
   	$(".player-cards").html("<h2> Your hand </h2> <div class='new-cards'></div>");
     $(".player-cards").css("width","");
 }
+//----------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------
+//Pass turn
 function pass(){
 
     function success(){
@@ -32,7 +37,7 @@ function pass(){
         url: '/crazyEights/status/',
         type: 'GET',
         dataType: 'json',
-        error: errorConexion,
+        error: conexionError,
         success: result => {
           waitTurn();
           //If end game
@@ -43,7 +48,7 @@ function pass(){
       url: '/crazyEights/pass_turn/',
       type: 'PUT',
         dataType: 'json',
-        error: errorConexion,
+        error: conexionError,
         success: result => {
           if (result.done){
           $('#play_game').toggleClass('hidden');
@@ -55,7 +60,10 @@ function pass(){
         }
     });
   }
+//----------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------
+//Function that puts a card into the discard stack
   function putCard(){
 
     function success(){
@@ -63,7 +71,7 @@ function pass(){
         url: '/crazyEights/status/',
         type: 'GET',
         dataType: 'json',
-        error: errorConexion,
+        error: conexionError,
         success: result => {
           endGame(result.status);
           waitTurn();
@@ -83,7 +91,7 @@ function pass(){
       type: 'PUT',
       dataType: 'json',
       data: {choice: card},
-      error: errorConexion,
+      error: conexionError,
       success: result => {
         if (result.done){
           if (result.isEight){
@@ -105,6 +113,7 @@ function pass(){
 
 
   }
+//----------------------------------------------------------------------------
 
   function endGame(status){
 
@@ -121,7 +130,8 @@ function pass(){
       }
     }
 
-
+//----------------------------------------------------------------------------
+//Function that grabs a card from the original deck
   function grabCard(){
 
     $.ajax({
@@ -129,7 +139,7 @@ function pass(){
       type: 'PUT',
       dataType: 'json',
       data: {},
-      error: errorConexion,
+      error: conexionError,
       success: result => {
         if (result.gotCard === 'accept'){
           console.log(result);
@@ -149,25 +159,25 @@ function pass(){
 
   }
 
-
+//----------------------------------------------------------------------------
   function showNewModal(){
     $('#new_modal').modal();
   }
-
+//----------------------------------------------------------------------------
   function showJoinModal(){
     $('#join_modal').modal();
     $.ajax({
       url: '/crazyEights/existingGames/',
       type: 'GET',
       dataType: 'json',
-      error: errorConexion,
+      error: conexionError,
       success: result => {
         if (result.length === 0) {
           //There are no available games at this moment
         } else {
           var r = result.map(x => {
             return '<option value="' + x.id + '">' +
-              escaparHtml(x.name) + '</option>';
+              escapeHtml(x.name) + '</option>';
           });
           $('#games').html(r.join('')).selectpicker('refresh');
           }
@@ -178,13 +188,13 @@ function pass(){
     //  .html('<option> city1 </option>').selectpicker('refresh');
 
   }
-
+//----------------------------------------------------------------------------
   function play(hand){
     for (var i = 0; i < hand.length; i++) {
       getCard(hand[i]);
     }
   }
-
+//----------------------------------------------------------------------------
     function getCard(card){
     var splitCard = card.split('');
     if (splitCard.length === 2){
@@ -205,7 +215,7 @@ function pass(){
 
 
   }
-
+//----------------------------------------------------------------------------
   function setLastCard(card){
     var splitCard = card.split('');
     if (splitCard.length === 2){
@@ -222,14 +232,14 @@ function pass(){
   }
 
 
-
+//----------------------------------------------------------------------------
 function waitContrincants(){
   $.ajax({
     url: '/crazyEights/start_game/',
     type: 'PUT',
     dataType: 'json',
     data: {},
-    error: errorConexion,
+    error: conexionError,
     success: result => {
       if (result.start){
         $('#start_game').hide();
@@ -259,7 +269,7 @@ function waitContrincants(){
         data: {
           name: name
         },
-        error: errorConexion,
+        error: conexionError,
         success: result => {
           console.log(result);
           var text;
@@ -278,7 +288,7 @@ function waitContrincants(){
                 type: 'GET',
                 dataType: 'json',
                 data: {},
-                error: errorConexion,
+                error: conexionError,
                 success: result => {
                 }
               });
@@ -299,7 +309,7 @@ function waitContrincants(){
     }
     return false;
   }
-
+//----------------------------------------------------------------------------
   function continueJoinGame(){
     var game_id = $('#games').val();
     $.ajax({
@@ -307,7 +317,7 @@ function waitContrincants(){
       type: 'PUT',
       dataType: 'json',
       data: { game_id: game_id },
-      error: errorConexion,
+      error: conexionError,
       success: result => {
         if (result.joined) {
           $('#main_screen').hide();
@@ -318,7 +328,7 @@ function waitContrincants(){
     });
 
   }
-
+//----------------------------------------------------------------------------
   function setClassification(){
 
     function successResult(){
@@ -326,7 +336,7 @@ function waitContrincants(){
         url: '/crazyEights/status/',
         type: 'GET',
         dataType: 'json',
-        error: errorConexion,
+        error: conexionError,
         success: result => {
           $('#play_game').toggleClass('hidden');
           reset();
@@ -343,7 +353,7 @@ function waitContrincants(){
         type: 'PUT',
         dataType: 'json',
         data: {classification: classification},
-        error: errorConexion,
+        error: conexionError,
         success: result => {
           successResult();
         }
@@ -351,34 +361,28 @@ function waitContrincants(){
   }
 
     //----------------------------------------------------------------------------
-  function mensajeError(mensaje) {
-    $('body').css('cursor', 'auto');
-    $('div').hide();
-    $('#mensaje_error').html(mensaje);
-    $('#seccion_error').show();
-  }
+
     // Para evitar inyecciones de HTML.
-  function escaparHtml (str) {
+  function escapeHtml (str) {
     return $('<div/>').text(str).html();
   }
 
-  function errorConexion() {
+  function conexionError() {
   mensajeError('No es posible conectarse al servidor.');
   }
 
   //----------------------------------------------------------------------------
+  //main method will administer all the turns of the players
 function waitTurn() {
   var seconds = 0;
   function ticToc() {
 
     seconds++;
-    // $('#mensaje_3').html('Llevas ' + seconds + ' segundo' +
-    //   (seconds === 1 ? '' : 's') + ' esperando.');
     $.ajax({
       url: '/crazyEights/status/',
       type: 'GET',
       dataType: 'json',
-      error: errorConexion,
+      error: conexionError,
       success: result => {
 
         switch (result.status) {
