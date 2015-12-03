@@ -1,6 +1,6 @@
 # Crazy-Eights Game
 
-This application was developed by Rodolfo Andrés Ramírez Valenzuela
+This application was developed
 as part of the Web Development class.
 
 The application lets you play the Crazy-Eights card game, it uses the following technologies.
