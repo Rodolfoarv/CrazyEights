@@ -56,7 +56,7 @@ router.post('/crazyEights/createGame/', (req,res) => {
         turn: game.playersInGame,
         hand: []
       });
-      for (let i = 0; i < 1; i++) {
+      for (let i = 0; i < 5; i++) {
         getCard(game,player);
       }
 
@@ -219,18 +219,6 @@ router.put('/crazyEights/pass_turn/', (req,res) => {
   let result = { done: false };
   getGamePlayer(req, (err, game, player) => {
 
-    function saveChangesTurn(){
-      game.turn++;
-      if (game.turn > game.playersInGame) {
-        game.turn = 1;
-      }
-        console.log(game.turn);
-        saveChanges(game);
-        saveChanges(player);
-        result.done = true;
-        player.drawTimes = 0;
-        res.json(result);
-    }
     if (game.deck.length === 1){
       game.turn++;
       if (game.turn > game.playersInGame){
@@ -239,8 +227,6 @@ router.put('/crazyEights/pass_turn/', (req,res) => {
       saveChanges(game);
       result.done = true;
       res.json(result);
-    }else{
-      saveChangesTurn();
     }
   });
 });

@@ -10,8 +10,6 @@ $(document).ready(() =>{
 
   //----------------------------------------------------------------------------
   $('#form_game_name').submit(continueCreateGame);
-
-
   $('#btn_continue_create_game').click(continueCreateGame);
   $('#btn_continue_join_game').click(continueJoinGame);
   $('#btn_continue_classification').click(setClassification);
@@ -90,7 +88,6 @@ function pass(){
         if (result.done){
           if (result.isEight){
             $('#classification_modal').modal();
-            reset();
 
           }else{
             setLastCard(card[0]+card[1]);
@@ -332,6 +329,7 @@ function waitContrincants(){
         error: errorConexion,
         success: result => {
           $('#play_game').toggleClass('hidden');
+          reset();
           waitTurn();
           //If end game
         }
@@ -392,9 +390,6 @@ function waitTurn() {
           setLastCard(result.discardMaze[result.discardMaze.length-1]);
           console.log('got everything correct');
           console.log(result.eightClassification);
-          if(result.eightClassification.length === 1){
-            console.log('gotta update the image!');
-          }
           play(result.playerHand);
 
           break;
