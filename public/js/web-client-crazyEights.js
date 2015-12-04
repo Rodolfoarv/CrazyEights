@@ -467,11 +467,11 @@ function getNumber(num){
 
 function getClassClassification(classificationString){
   if(classificationString === 'diamonds'){
-    return '♠';
+    return '♦';
   }else if(classificationString === 'hearts'){
-    return '♥'
+    return '♥';
   }else if(classificationString === 'spades'){
-    return '♦'
+    return '♠';
   }else{ //♣
     return '♣';
   }
